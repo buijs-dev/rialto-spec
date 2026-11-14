@@ -1,0 +1,17 @@
+# expect: RIALTO-K004
+# capabilities: domain.entity, domain.projection
+# A string has no properties, so a path cannot continue after it (K1.2).
+rialto: "1.0.0"
+info: {name: projection-scalar-path, version: 1.0.0}
+types:
+  Order:
+    kind: entity
+    identity: [id]
+    properties:
+      id: {type: uuid}
+      title: {type: string}
+      amount: {type: decimal}
+  OrderTitle:
+    kind: projection
+    source: Order
+    properties: {id: id, amount: title.amount}

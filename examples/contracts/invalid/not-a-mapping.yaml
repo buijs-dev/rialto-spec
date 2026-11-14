@@ -1,0 +1,4 @@
+# expect: RIALTO-K001
+# A contract is a mapping; this document is a list.
+- rialto: "1.0.0"
+- info: {name: not-a-mapping, version: 1.0.0}

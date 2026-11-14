@@ -1,0 +1,12 @@
+rialto: "1.0.0"
+errors:
+  format: problem-details
+  validationStatus: 400
+  identify: member
+  wire:
+    code: /code
+    fieldErrors: /errors
+    field: {location: /pointer, code: /code, detail: /detail}
+    locationFormat: pointer
+  codes:
+    blank: {category: validation, title: Must not be blank}

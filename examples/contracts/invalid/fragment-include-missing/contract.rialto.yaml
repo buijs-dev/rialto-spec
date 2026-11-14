@@ -1,0 +1,4 @@
+# expect: RIALTO-K007
+rialto: "1.0.0"
+info: {name: fragment-include-missing, version: 1.0.0}
+include: [parts/*.rialto.yaml, missing/*.rialto.yaml]

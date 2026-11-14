@@ -1,0 +1,4 @@
+# expect: RIALTO-K003
+rialto: "1.0.0"
+info: {name: fragment-version, version: 1.0.0}
+include: [parts/*.rialto.yaml]

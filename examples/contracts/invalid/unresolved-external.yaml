@@ -1,0 +1,15 @@
+# expect: RIALTO-S002
+# capabilities: domain.entity
+rialto: "1.0.0"
+info: {name: unresolved-external, version: 1.0.0}
+sources:
+  api: {kind: openapi, path: ../support/api.json, version: 2.0.0, status: current}
+types:
+  Thing:
+    kind: entity
+    identity: [id]
+    properties:
+      id: {type: uuid}
+mappings:
+  # The source loads, but it has no schema Missing.
+  - {source: api#/components/schemas/Missing, target: Thing, direction: toTarget}

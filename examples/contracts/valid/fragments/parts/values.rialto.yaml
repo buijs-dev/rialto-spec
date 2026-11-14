@@ -1,0 +1,4 @@
+rialto: "1.0.0"
+# Thing, in another fragment, refers to Size by name.
+types:
+  Size: {kind: enum, members: [small, large]}

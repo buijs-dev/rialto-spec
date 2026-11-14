@@ -1,0 +1,4 @@
+# expect: RIALTO-K005
+rialto: "1.0.0"
+info: {name: fragment-duplicate, version: 1.0.0}
+include: [parts/*.rialto.yaml]
