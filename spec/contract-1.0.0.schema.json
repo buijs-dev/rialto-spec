@@ -1,0 +1,3474 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rialto.buijs.dev/spec/contract-1.0.0.schema.json",
+  "title": "Rialto contract 1.0.0",
+  "description": "Structure of a Rialto contract. Reference resolution and name uniqueness (K1.2, K1.3) are checked by generators, not by this schema.",
+  "type": "object",
+  "required": [
+    "rialto",
+    "info"
+  ],
+  "properties": {
+    "rialto": {
+      "const": "1.0.0"
+    },
+    "info": {
+      "$ref": "#/$defs/info"
+    },
+    "sources": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/sourceName"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "include": {
+      "description": "The fragments of a contract over several files: paths relative to this document, with * and ** (K5).",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "types": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/typeName"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/type"
+      }
+    },
+    "shapes": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/typeName"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/shape"
+      }
+    },
+    "operations": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/memberName"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/operation"
+      }
+    },
+    "mappings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/mapping"
+      }
+    },
+    "storage": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/typeName"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/storage"
+      }
+    },
+    "views": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/typeName"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/view"
+      }
+    },
+    "navigation": {
+      "$ref": "#/$defs/navigation"
+    },
+    "errors": {
+      "$ref": "#/$defs/errors"
+    },
+    "events": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/typeName"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/event"
+      }
+    },
+    "subscriptions": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/memberName"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/subscription"
+      }
+    },
+    "streams": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/memberName"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/stream"
+      }
+    },
+    "auth": {
+      "$ref": "#/$defs/auth"
+    }
+  },
+  "patternProperties": {
+    "^x-": true
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "sourceName": {
+      "type": "string",
+      "pattern": "^[a-z][A-Za-z0-9]*$"
+    },
+    "typeName": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Za-z0-9]*$"
+    },
+    "memberName": {
+      "type": "string",
+      "pattern": "^[a-z][A-Za-z0-9_]*$"
+    },
+    "propertyPath": {
+      "type": "string",
+      "pattern": "^[a-z][A-Za-z0-9_]*(\\.[a-z][A-Za-z0-9_]*)*$"
+    },
+    "storageOrderBy": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][A-Za-z0-9_]* (asc|desc)$"
+      }
+    },
+    "externalRef": {
+      "description": "<source>#<location>: a JSON Pointer for openapi sources, table or table.column for sql sources.",
+      "type": "string",
+      "pattern": "^[a-z][A-Za-z0-9]*#.+$"
+    },
+    "typeRef": {
+      "description": "A contract type or shape name, or an external reference.",
+      "anyOf": [
+        {
+          "$ref": "#/$defs/typeName"
+        },
+        {
+          "$ref": "#/$defs/externalRef"
+        }
+      ]
+    },
+    "typeExpression": {
+      "description": "Scalar, named type, or one level of list, set or map.",
+      "type": "string",
+      "pattern": "^(?:boolean|int32|int64|decimal(\\(\\d+,\\d+\\))?|float64|string|uuid|date|time|localDateTime|instant|offsetDateTime|zonedDateTime|duration|period|bytes|json|binary|[A-Z][A-Za-z0-9]*|list<(?:boolean|int32|int64|decimal(\\(\\d+,\\d+\\))?|float64|string|uuid|date|time|localDateTime|instant|offsetDateTime|zonedDateTime|duration|period|bytes|json|[A-Z][A-Za-z0-9]*)\\??>|set<(?:boolean|int32|int64|decimal(\\(\\d+,\\d+\\))?|float64|string|uuid|date|time|localDateTime|instant|offsetDateTime|zonedDateTime|duration|period|bytes|json|[A-Z][A-Za-z0-9]*)\\??>|map<(?:string|uuid|int32|int64|date|[A-Z][A-Za-z0-9]*), ?(?:boolean|int32|int64|decimal(\\(\\d+,\\d+\\))?|float64|string|uuid|date|time|localDateTime|instant|offsetDateTime|zonedDateTime|duration|period|bytes|json|[A-Z][A-Za-z0-9]*)\\??>)$"
+    },
+    "scalar": {
+      "type": "string",
+      "pattern": "^(?:boolean|int32|int64|decimal(\\(\\d+,\\d+\\))?|float64|string|uuid|date|time|localDateTime|instant|offsetDateTime|zonedDateTime|duration|period|bytes|json)$"
+    },
+    "info": {
+      "type": "object",
+      "required": [
+        "name",
+        "version"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "kind",
+        "path"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "openapi",
+            "asyncapi",
+            "sql"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dialect": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+        },
+        "status": {
+          "enum": [
+            "current",
+            "deprecated"
+          ]
+        },
+        "deprecated": {
+          "type": "string",
+          "format": "date"
+        },
+        "sunset": {
+          "type": "string",
+          "format": "date"
+        },
+        "successor": {
+          "$ref": "#/$defs/sourceName"
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "sql"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "dialect"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "status"
+                  ]
+                },
+                {
+                  "required": [
+                    "version"
+                  ]
+                },
+                {
+                  "required": [
+                    "successor"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "openapi",
+                  "asyncapi"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "version",
+              "status"
+            ],
+            "not": {
+              "required": [
+                "dialect"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "deprecated"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "deprecated"
+            ]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "deprecated"
+                  ]
+                },
+                {
+                  "required": [
+                    "sunset"
+                  ]
+                },
+                {
+                  "required": [
+                    "successor"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "property": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/typeExpression"
+        },
+        "nullable": {
+          "type": "boolean"
+        },
+        "minLength": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxLength": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "minimum": {
+          "type": "number"
+        },
+        "maximum": {
+          "type": "number"
+        },
+        "pattern": {
+          "type": "string"
+        },
+        "relation": {
+          "enum": [
+            "owned",
+            "reference"
+          ]
+        },
+        "default": {
+          "type": "object",
+          "required": [
+            "value",
+            "phase"
+          ],
+          "properties": {
+            "value": true,
+            "phase": {
+              "enum": [
+                "decode",
+                "business",
+                "storage"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "exclusiveMinimum": {
+          "type": "number"
+        },
+        "exclusiveMaximum": {
+          "type": "number"
+        },
+        "multipleOf": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "minItems": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxItems": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "uniqueItems": {
+          "description": "For a list<T>: no two equal elements (D3.8).",
+          "const": true
+        },
+        "format": {
+          "type": "string",
+          "minLength": 1
+        },
+        "maxSize": {
+          "description": "For a binary: the largest size in bytes (K2.11).",
+          "type": "integer",
+          "minimum": 1
+        },
+        "mediaTypes": {
+          "description": "For a binary: the media types it may have, such as application/pdf or image/*.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9!#$&^_.+-]*/(\\*|[a-z0-9][a-z0-9!#$&^_.+-]*)$"
+          }
+        },
+        "description": {
+          "type": "string"
+        },
+        "immutable": {
+          "description": "Set at creation and never changed afterwards (L1.6).",
+          "type": "boolean"
+        },
+        "requiredWhen": {
+          "description": "Per enum property of the same type, the members while which the property is not null (D3.6).",
+          "type": "object",
+          "minProperties": 1,
+          "maxProperties": 1,
+          "propertyNames": {
+            "$ref": "#/$defs/memberName"
+          },
+          "additionalProperties": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "absentWhen": {
+          "description": "Per enum property of the same type, the members while which the property is null (D3.6).",
+          "type": "object",
+          "minProperties": 1,
+          "maxProperties": 1,
+          "propertyNames": {
+            "$ref": "#/$defs/memberName"
+          },
+          "additionalProperties": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "minimumOf": {
+          "description": "Another property of the same type that this one is at least (D3.7).",
+          "$ref": "#/$defs/memberName"
+        },
+        "maximumOf": {
+          "description": "Another property of the same type that this one is at most (D3.7).",
+          "$ref": "#/$defs/memberName"
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "properties": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/memberName"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/property"
+      }
+    },
+    "type": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "entity",
+            "value",
+            "enum",
+            "projection",
+            "union"
+          ]
+        }
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/entityType"
+        },
+        {
+          "$ref": "#/$defs/valueType"
+        },
+        {
+          "$ref": "#/$defs/enumType"
+        },
+        {
+          "$ref": "#/$defs/projectionType"
+        },
+        {
+          "$ref": "#/$defs/unionType"
+        }
+      ]
+    },
+    "entityType": {
+      "type": "object",
+      "required": [
+        "kind",
+        "identity",
+        "properties"
+      ],
+      "properties": {
+        "kind": {
+          "const": "entity"
+        },
+        "identity": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/memberName"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "aggregateRoot": {
+          "type": "boolean"
+        },
+        "transitions": {
+          "description": "The state property and the allowed transitions between its members (lifecycle L5).",
+          "type": "object",
+          "required": [
+            "property",
+            "rules"
+          ],
+          "properties": {
+            "property": {
+              "$ref": "#/$defs/memberName"
+            },
+            "rules": {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "$ref": "#/$defs/memberName"
+              },
+              "additionalProperties": {
+                "type": "object",
+                "required": [
+                  "from",
+                  "to"
+                ],
+                "properties": {
+                  "from": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                  },
+                  "to": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "sets": {
+                    "description": "Properties the rule writes in the same write as its to member: now, actor or null (lifecycle L5.7).",
+                    "type": "object",
+                    "minProperties": 1,
+                    "propertyNames": {
+                      "$ref": "#/$defs/memberName"
+                    },
+                    "additionalProperties": {
+                      "enum": [
+                        "now",
+                        "actor",
+                        null
+                      ]
+                    }
+                  },
+                  "emits": {
+                    "description": "Events an operation can emit when it performs this rule (lifecycle L5.10).",
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/$defs/typeName"
+                    },
+                    "uniqueItems": true,
+                    "minItems": 1
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "invariant": {
+          "type": "string",
+          "minLength": 1
+        },
+        "properties": {
+          "$ref": "#/$defs/properties"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "valueType": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "const": "value"
+        },
+        "wraps": {
+          "$ref": "#/$defs/scalar"
+        },
+        "invariant": {
+          "type": "string",
+          "minLength": 1
+        },
+        "properties": {
+          "$ref": "#/$defs/properties"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false,
+      "not": {
+        "required": [
+          "wraps",
+          "properties"
+        ]
+      }
+    },
+    "enumType": {
+      "type": "object",
+      "required": [
+        "kind",
+        "members"
+      ],
+      "properties": {
+        "kind": {
+          "const": "enum"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "extensible": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "projectionType": {
+      "type": "object",
+      "required": [
+        "kind",
+        "source",
+        "properties"
+      ],
+      "properties": {
+        "kind": {
+          "const": "projection"
+        },
+        "source": {
+          "$ref": "#/$defs/typeName"
+        },
+        "properties": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/memberName"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "$ref": "#/$defs/memberName"
+              },
+              "additionalProperties": {
+                "$ref": "#/$defs/propertyPath"
+              }
+            }
+          ]
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "shape": {
+      "type": "object",
+      "required": [
+        "source",
+        "properties"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/typeName"
+        },
+        "partial": {
+          "type": "boolean"
+        },
+        "properties": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/memberName"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "enum": [
+                  "caller",
+                  "application",
+                  "storage",
+                  "derived",
+                  "actor"
+                ]
+              },
+              "provider": {
+                "type": "string",
+                "minLength": 1
+              },
+              "via": {
+                "description": "For role actor: the authored seam that derives the value from the verified principal (S4.6).",
+                "type": "string",
+                "minLength": 1
+              },
+              "as": {
+                "oneOf": [
+                  {
+                    "enum": [
+                      "value",
+                      "identity",
+                      "command"
+                    ]
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "enum": [
+                        "identity",
+                        "command"
+                      ]
+                    },
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "uniqueItems": true
+                  }
+                ]
+              },
+              "shape": {
+                "$ref": "#/$defs/typeName"
+              },
+              "minLength": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "maxLength": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "minimum": {
+                "type": "number"
+              },
+              "maximum": {
+                "type": "number"
+              },
+              "exclusiveMinimum": {
+                "type": "number"
+              },
+              "exclusiveMaximum": {
+                "type": "number"
+              },
+              "multipleOf": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "minItems": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "maxItems": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "uniqueItems": {
+                "description": "For a list<T>: no two equal elements (D3.8).",
+                "const": true
+              },
+              "pattern": {
+                "type": "string"
+              },
+              "format": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "patternProperties": {
+              "^x-": true
+            },
+            "additionalProperties": false,
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "role": {
+                      "const": "application"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "provider"
+                  ]
+                },
+                "else": {
+                  "not": {
+                    "required": [
+                      "provider"
+                    ]
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "as": {
+                      "const": "command"
+                    }
+                  },
+                  "required": [
+                    "as"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "shape"
+                  ]
+                },
+                "else": {
+                  "if": {
+                    "properties": {
+                      "as": {
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "as"
+                    ]
+                  },
+                  "else": {
+                    "not": {
+                      "required": [
+                        "shape"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "role": {
+                      "const": "actor"
+                    }
+                  }
+                },
+                "else": {
+                  "not": {
+                    "required": [
+                      "via"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "command": {
+          "enum": [
+            "create",
+            "update"
+          ]
+        },
+        "strategy": {
+          "enum": [
+            "merge-patch",
+            "replace"
+          ]
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "command": {
+                "const": "update"
+              }
+            },
+            "required": [
+              "command"
+            ]
+          },
+          "then": {
+            "required": [
+              "strategy"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "strategy"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "operation": {
+      "type": "object",
+      "properties": {
+        "rest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/externalRef"
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "$ref": "#/$defs/sourceName"
+              },
+              "additionalProperties": {
+                "$ref": "#/$defs/externalRef"
+              }
+            }
+          ]
+        },
+        "input": {
+          "$ref": "#/$defs/typeName"
+        },
+        "output": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/typeName"
+            },
+            {
+              "type": "string",
+              "pattern": "^list<[A-Z][A-Za-z0-9]*>$"
+            }
+          ]
+        },
+        "parameters": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "type": "string",
+            "minLength": 1
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/propertyPath"
+          }
+        },
+        "precondition": {
+          "type": "object",
+          "required": [
+            "token",
+            "version"
+          ],
+          "properties": {
+            "token": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "const": "stored"
+            }
+          },
+          "additionalProperties": false
+        },
+        "transition": {
+          "description": "The transition this operation performs, as <Type>.<rule>, or the rule the value at select in the request body names (lifecycle L5, L5.6).",
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Z][A-Za-z0-9]*\\.[a-z][A-Za-z0-9_]*$"
+            },
+            {
+              "type": "object",
+              "required": [
+                "select",
+                "rules"
+              ],
+              "properties": {
+                "select": {
+                  "type": "string",
+                  "pattern": "^(/[^/]*)+$"
+                },
+                "rules": {
+                  "type": "object",
+                  "minProperties": 1,
+                  "propertyNames": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "pattern": "^[A-Z][A-Za-z0-9]*\\.[a-z][A-Za-z0-9_]*$"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "from": {
+          "description": "For a delete: the states in which the entity may be deleted (lifecycle L5.9).",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "conditional": {
+          "type": "object",
+          "required": [
+            "token",
+            "version"
+          ],
+          "properties": {
+            "token": {
+              "const": "If-None-Match"
+            },
+            "version": {
+              "const": "stored"
+            }
+          },
+          "additionalProperties": false
+        },
+        "handler": {
+          "const": "authored"
+        },
+        "list": {
+          "$ref": "#/$defs/list"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/codeName"
+          },
+          "uniqueItems": true
+        },
+        "lifecycle": {
+          "enum": [
+            "create",
+            "update",
+            "delete",
+            "restore"
+          ]
+        },
+        "idempotency": {
+          "type": "object",
+          "required": [
+            "header"
+          ],
+          "properties": {
+            "header": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "batch": {
+          "type": "object",
+          "required": [
+            "atomic",
+            "wire"
+          ],
+          "properties": {
+            "atomic": {
+              "type": "boolean"
+            },
+            "maxItems": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "wire": {
+              "type": "object",
+              "required": [
+                "items",
+                "results"
+              ],
+              "properties": {
+                "items": {
+                  "type": "string",
+                  "pattern": "^((/[^/]*)+)?$"
+                },
+                "results": {
+                  "type": "string",
+                  "pattern": "^((/[^/]*)+)?$"
+                },
+                "value": {
+                  "type": "string",
+                  "pattern": "^((/[^/]*)+)?$"
+                },
+                "problem": {
+                  "type": "string",
+                  "pattern": "^((/[^/]*)+)?$"
+                },
+                "index": {
+                  "type": "string",
+                  "pattern": "^((/[^/]*)+)?$"
+                },
+                "status": {
+                  "type": "string",
+                  "pattern": "^((/[^/]*)+)?$"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "deprecated": {
+          "type": "object",
+          "required": [
+            "since"
+          ],
+          "properties": {
+            "since": {
+              "type": "string",
+              "format": "date"
+            },
+            "sunset": {
+              "type": "string",
+              "format": "date"
+            },
+            "successor": {
+              "$ref": "#/$defs/memberName"
+            }
+          },
+          "additionalProperties": false
+        },
+        "emits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/typeName"
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "principals": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "user",
+              "service"
+            ]
+          }
+        },
+        "policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "link": {
+          "description": "Adds or removes one link of a to-many reference (L6).",
+          "type": "object",
+          "required": [
+            "to",
+            "action"
+          ],
+          "properties": {
+            "to": {
+              "type": "string",
+              "pattern": "^[A-Z][A-Za-z0-9]*\\.[a-z][A-Za-z0-9_]*$"
+            },
+            "action": {
+              "enum": [
+                "add",
+                "remove"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "subject": {
+          "description": "The entity the operation addresses (R1.7), or the entity of the verified principal (R1.8).",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/typeName"
+            },
+            {
+              "type": "object",
+              "required": [
+                "type",
+                "by"
+              ],
+              "properties": {
+                "type": {
+                  "$ref": "#/$defs/typeName"
+                },
+                "by": {
+                  "const": "actor"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "deleted": {
+          "description": "Reads soft-deleted rows explicitly (P6.3).",
+          "enum": [
+            "include",
+            "only"
+          ]
+        },
+        "maxItems": {
+          "description": "For output: list<T>, the most elements the response holds (R2.7).",
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "lifecycle": {
+                "enum": [
+                  "create",
+                  "update"
+                ]
+              }
+            },
+            "required": [
+              "lifecycle"
+            ]
+          },
+          "then": {
+            "required": [
+              "input"
+            ]
+          }
+        }
+      ]
+    },
+    "mapping": {
+      "type": "object",
+      "required": [
+        "source",
+        "target",
+        "direction"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/typeRef"
+        },
+        "target": {
+          "$ref": "#/$defs/typeRef"
+        },
+        "direction": {
+          "enum": [
+            "toTarget",
+            "toSource",
+            "both"
+          ]
+        },
+        "properties": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/propertyPath"
+          },
+          "patternProperties": {
+            "\\..*\\.": false,
+            "\\.": {
+              "description": "A path key has two names and declares from (M2.10).",
+              "required": [
+                "from"
+              ],
+              "$ref": "#/$defs/propertyMapping"
+            }
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/propertyMapping"
+          }
+        },
+        "ignore": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/propertyPath"
+          },
+          "uniqueItems": true
+        },
+        "variants": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "propertyMapping": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/propertyPath"
+            },
+            {
+              "type": "object",
+              "required": [
+                "identity",
+                "command"
+              ],
+              "properties": {
+                "identity": {
+                  "$ref": "#/$defs/propertyPath"
+                },
+                "command": {
+                  "$ref": "#/$defs/propertyPath"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "custom": {
+          "const": true
+        },
+        "converter": {
+          "type": "object",
+          "properties": {
+            "toTarget": {
+              "type": "string",
+              "minLength": 1
+            },
+            "toSource": {
+              "type": "string",
+              "minLength": 1
+            },
+            "nulls": {
+              "enum": [
+                "pass",
+                "skip"
+              ]
+            },
+            "scope": {
+              "enum": [
+                "whole",
+                "element"
+              ]
+            }
+          },
+          "anyOf": [
+            {
+              "required": [
+                "toTarget"
+              ]
+            },
+            {
+              "required": [
+                "toSource"
+              ]
+            }
+          ],
+          "additionalProperties": false
+        },
+        "members": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "fallback": {
+          "type": "string",
+          "minLength": 1
+        },
+        "nullAs": {
+          "const": "empty"
+        },
+        "onDuplicate": {
+          "enum": [
+            "reject",
+            "keepFirst"
+          ]
+        },
+        "version": {
+          "description": "This api# property carries the stored version of the entity (M2.9).",
+          "const": "stored"
+        },
+        "presence": {
+          "description": "A boolean flag: true when this source property was present in the input (M3.11).",
+          "$ref": "#/$defs/memberName"
+        }
+      },
+      "not": {
+        "required": [
+          "custom",
+          "from"
+        ]
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "version"
+            ]
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "from"
+                  ]
+                },
+                {
+                  "required": [
+                    "custom"
+                  ]
+                },
+                {
+                  "required": [
+                    "converter"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "presence"
+            ]
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "from"
+                  ]
+                },
+                {
+                  "required": [
+                    "custom"
+                  ]
+                },
+                {
+                  "required": [
+                    "converter"
+                  ]
+                },
+                {
+                  "required": [
+                    "members"
+                  ]
+                },
+                {
+                  "required": [
+                    "fallback"
+                  ]
+                },
+                {
+                  "required": [
+                    "nullAs"
+                  ]
+                },
+                {
+                  "required": [
+                    "onDuplicate"
+                  ]
+                },
+                {
+                  "required": [
+                    "version"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "storage": {
+      "type": "object",
+      "required": [
+        "table"
+      ],
+      "properties": {
+        "table": {
+          "$ref": "#/$defs/externalRef"
+        },
+        "storageKey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "columns": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/propertyPath"
+          },
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "object",
+                "required": [
+                  "join",
+                  "table",
+                  "key"
+                ],
+                "properties": {
+                  "join": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "table": {
+                    "$ref": "#/$defs/externalRef"
+                  },
+                  "key": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "additionalProperties": false
+              },
+              {
+                "description": "A join of two steps (P2.11).",
+                "type": "object",
+                "required": [
+                  "join",
+                  "key"
+                ],
+                "properties": {
+                  "join": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "column",
+                        "table"
+                      ],
+                      "properties": {
+                        "column": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "table": {
+                          "$ref": "#/$defs/externalRef"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "key": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generated": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/memberName"
+          },
+          "additionalProperties": {
+            "enum": [
+              "storage",
+              "application"
+            ]
+          }
+        },
+        "computed": {
+          "description": "Per property, a read-only value computed in the read: count, the to-many property it counts (P2.13).",
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/memberName"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "count"
+            ],
+            "properties": {
+              "count": {
+                "$ref": "#/$defs/memberName"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "children": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/memberName"
+          },
+          "additionalProperties": {
+            "properties": {
+              "order": {
+                "type": "string",
+                "minLength": 1
+              },
+              "orderBy": {
+                "$ref": "#/$defs/storageOrderBy"
+              }
+            },
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "parentKey",
+                  "reconcile"
+                ],
+                "properties": {
+                  "parentKey": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "reconcile": {
+                    "enum": [
+                      "identity",
+                      "replaceAll"
+                    ]
+                  },
+                  "nullAs": {
+                    "const": "empty"
+                  },
+                  "onDelete": {
+                    "enum": [
+                      "cascade",
+                      "restrict"
+                    ]
+                  },
+                  "order": true,
+                  "orderBy": true
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "ownerKey"
+                ],
+                "properties": {
+                  "ownerKey": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "onDelete": {
+                    "enum": [
+                      "cascade",
+                      "restrict"
+                    ]
+                  },
+                  "order": true,
+                  "orderBy": true
+                },
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "links": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/memberName"
+          },
+          "additionalProperties": {
+            "properties": {
+              "order": {
+                "type": "string",
+                "minLength": 1
+              },
+              "orderBy": {
+                "$ref": "#/$defs/storageOrderBy"
+              }
+            },
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "table",
+                  "ownerKey",
+                  "targetKey"
+                ],
+                "properties": {
+                  "table": {
+                    "$ref": "#/$defs/externalRef"
+                  },
+                  "ownerKey": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "targetKey": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "onDelete": {
+                    "enum": [
+                      "cascade",
+                      "restrict"
+                    ]
+                  },
+                  "order": true,
+                  "orderBy": true
+                },
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "required": [
+                  "ownerKey"
+                ],
+                "properties": {
+                  "ownerKey": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "order": true,
+                  "orderBy": true
+                },
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "delete": {
+          "oneOf": [
+            {
+              "enum": [
+                "none",
+                "physical"
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "soft"
+              ],
+              "properties": {
+                "soft": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "restore": {
+                  "type": "boolean"
+                },
+                "by": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "blobs": {
+          "description": "Per binary property, the authored blob store that keeps it and the columns of its key and metadata (P7).",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "store",
+              "key"
+            ],
+            "properties": {
+              "store": {
+                "$ref": "#/$defs/sourceName"
+              },
+              "key": {
+                "type": "string",
+                "minLength": 1
+              },
+              "mediaType": {
+                "type": "string",
+                "minLength": 1
+              },
+              "size": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sha256": {
+                "type": "string",
+                "minLength": 1
+              },
+              "check": {
+                "const": "authored"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "scope": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "column",
+              "source"
+            ],
+            "properties": {
+              "column": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source": {
+                "enum": [
+                  "tenant",
+                  "actor"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "retry": {
+          "type": "object",
+          "required": [
+            "attempts",
+            "idempotent"
+          ],
+          "properties": {
+            "attempts": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "idempotent": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "union": {
+          "type": "object",
+          "required": [
+            "strategy",
+            "discriminator"
+          ],
+          "properties": {
+            "strategy": {
+              "enum": [
+                "single-table",
+                "joined"
+              ]
+            },
+            "discriminator": {
+              "type": "string",
+              "minLength": 1
+            },
+            "variants": {
+              "type": "object",
+              "propertyNames": {
+                "$ref": "#/$defs/typeName"
+              },
+              "additionalProperties": {
+                "type": "object",
+                "required": [
+                  "table"
+                ],
+                "properties": {
+                  "table": {
+                    "$ref": "#/$defs/externalRef"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "if": {
+            "properties": {
+              "strategy": {
+                "const": "joined"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "variants"
+            ]
+          },
+          "additionalProperties": false
+        },
+        "unique": {
+          "description": "Properties whose values are unique together (P3.6).",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/memberName"
+            }
+          }
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "view": {
+      "type": "object",
+      "properties": {
+        "route": {
+          "description": "A route path: segments of literal text or one {parameter} (presentation U5.3).",
+          "type": "string",
+          "pattern": "^/(?:(?:[^/{}]+|\\{[A-Za-z][A-Za-z0-9_]*\\})(?:/(?:[^/{}]+|\\{[A-Za-z][A-Za-z0-9_]*\\}))*)?$"
+        },
+        "load": {
+          "$ref": "#/$defs/memberName"
+        },
+        "submit": {
+          "$ref": "#/$defs/memberName"
+        },
+        "fields": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/propertyPath"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/field"
+          }
+        },
+        "actions": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/memberName"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/action"
+          }
+        },
+        "tabs": {
+          "description": "Views shown as tabs of this view, in order (presentation U5.10).",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/typeName"
+          }
+        },
+        "slots": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/memberName"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "context",
+              "mode"
+            ],
+            "properties": {
+              "context": {
+                "$ref": "#/$defs/typeExpression"
+              },
+              "mode": {
+                "enum": [
+                  "replace",
+                  "append"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "dirty": {
+          "type": "object",
+          "properties": {
+            "trim": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "replaceable": {
+          "type": "boolean"
+        },
+        "list": {
+          "type": "object",
+          "required": [
+            "operation"
+          ],
+          "properties": {
+            "operation": {
+              "$ref": "#/$defs/memberName"
+            },
+            "columns": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/propertyPath"
+              },
+              "uniqueItems": true
+            },
+            "filters": {
+              "type": "object",
+              "propertyNames": {
+                "$ref": "#/$defs/memberName"
+              },
+              "additionalProperties": {
+                "type": "object",
+                "required": [
+                  "field",
+                  "operator"
+                ],
+                "properties": {
+                  "field": {
+                    "$ref": "#/$defs/memberName"
+                  },
+                  "operator": {
+                    "enum": [
+                      "eq",
+                      "ne",
+                      "gt",
+                      "ge",
+                      "lt",
+                      "le",
+                      "in",
+                      "out",
+                      "like",
+                      "ilike"
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "pageSize": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "where": {
+              "description": "Filters the view always sends, with the signed-in actor as value (presentation U6.5).",
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "field",
+                  "operator",
+                  "value"
+                ],
+                "properties": {
+                  "field": {
+                    "$ref": "#/$defs/memberName"
+                  },
+                  "operator": {
+                    "enum": [
+                      "eq",
+                      "ne",
+                      "gt",
+                      "ge",
+                      "lt",
+                      "le",
+                      "in",
+                      "out",
+                      "like",
+                      "ilike"
+                    ]
+                  },
+                  "value": {
+                    "const": "actor"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "actions": {
+              "description": "Actions offered on each row, with parameters from the row (presentation U3.10).",
+              "type": "object",
+              "propertyNames": {
+                "$ref": "#/$defs/memberName"
+              },
+              "additionalProperties": {
+                "$ref": "#/$defs/action"
+              }
+            },
+            "open": {
+              "description": "The view a row opens, with its route filled from the row (presentation U5.11).",
+              "$ref": "#/$defs/typeName"
+            }
+          },
+          "additionalProperties": false
+        },
+        "refreshOn": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/typeName"
+          }
+        },
+        "requires": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "field": {
+      "type": "object",
+      "properties": {
+        "edit": {
+          "$ref": "#/$defs/memberName"
+        },
+        "partial": {
+          "type": "boolean"
+        },
+        "hidden": {
+          "enum": [
+            "keep",
+            "clear"
+          ]
+        },
+        "disabled": {
+          "enum": [
+            "submit",
+            "omit"
+          ]
+        },
+        "component": {
+          "const": "custom"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "visibleWhen": {
+          "$ref": "#/$defs/viewCondition"
+        },
+        "enabledWhen": {
+          "$ref": "#/$defs/viewCondition"
+        },
+        "link": {
+          "description": "The view the value links to, with its route filled from the value (presentation U5.11).",
+          "$ref": "#/$defs/typeName"
+        },
+        "options": {
+          "description": "A choice of elements that fills the field with the identity of the chosen one (presentation U2.11).",
+          "type": "object",
+          "required": [
+            "operation",
+            "label"
+          ],
+          "properties": {
+            "operation": {
+              "$ref": "#/$defs/memberName"
+            },
+            "label": {
+              "$ref": "#/$defs/propertyPath"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "action": {
+      "type": "object",
+      "required": [
+        "operation"
+      ],
+      "properties": {
+        "operation": {
+          "$ref": "#/$defs/memberName"
+        },
+        "confirm": {
+          "type": "boolean"
+        },
+        "pending": {
+          "enum": [
+            "block",
+            "queue",
+            "cancelPrevious"
+          ]
+        },
+        "after": {
+          "oneOf": [
+            {
+              "enum": [
+                "reload",
+                "reset"
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "navigate"
+              ],
+              "properties": {
+                "navigate": {
+                  "$ref": "#/$defs/typeName"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "values": {
+          "description": "Fixed values the action sends, per JSON Pointer in the request body (presentation U3.9).",
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "type": "string",
+            "pattern": "^(/[^/]*)+$"
+          },
+          "additionalProperties": {
+            "type": [
+              "string",
+              "number",
+              "boolean",
+              "null"
+            ]
+          }
+        },
+        "visibleWhen": {
+          "$ref": "#/$defs/viewCondition"
+        },
+        "enabledWhen": {
+          "$ref": "#/$defs/viewCondition"
+        },
+        "parameters": {
+          "description": "For a row action: per operation parameter, its source, route.<name> or row.<path> (presentation U3.10).",
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "$ref": "#/$defs/memberName"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^(?:route\\.[A-Za-z][A-Za-z0-9_]*|row\\.[a-z][A-Za-z0-9_]*(?:\\.[a-z][A-Za-z0-9_]*)*)$"
+          }
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "viewCondition": {
+      "description": "When an action or field is visible or enabled: per property path, the enum members one of which it holds, or actor (presentation U3.11).",
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/propertyPath"
+      },
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "const": "actor"
+          },
+          {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ]
+      }
+    },
+    "navigation": {
+      "description": "The menu of the application: its home view and entries (presentation U5.9).",
+      "type": "object",
+      "minProperties": 1,
+      "properties": {
+        "home": {
+          "$ref": "#/$defs/typeName"
+        },
+        "primary": {
+          "$ref": "#/$defs/navigationEntries"
+        },
+        "secondary": {
+          "$ref": "#/$defs/navigationEntries"
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "navigationEntries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "view"
+        ],
+        "properties": {
+          "view": {
+            "$ref": "#/$defs/typeName"
+          },
+          "icon": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "badge": {
+            "$ref": "#/$defs/memberName"
+          }
+        },
+        "patternProperties": {
+          "^x-": true
+        },
+        "additionalProperties": false
+      }
+    },
+    "list": {
+      "type": "object",
+      "required": [
+        "fields",
+        "pagination"
+      ],
+      "properties": {
+        "fields": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "$ref": "#/$defs/memberName"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "$ref": "#/$defs/propertyPath"
+              },
+              "filter": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "enum": [
+                    "eq",
+                    "ne",
+                    "gt",
+                    "ge",
+                    "lt",
+                    "le",
+                    "in",
+                    "out",
+                    "like",
+                    "ilike"
+                  ]
+                }
+              },
+              "sort": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "filter": {
+          "type": "object",
+          "properties": {
+            "encoding": {
+              "enum": [
+                "rsql"
+              ]
+            },
+            "maxLength": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maxDepth": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "sort": {
+          "type": "object",
+          "required": [
+            "tiebreaker"
+          ],
+          "properties": {
+            "encoding": {
+              "enum": [
+                "colon",
+                "jsonapi"
+              ]
+            },
+            "default": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "field",
+                  "direction"
+                ],
+                "properties": {
+                  "field": {
+                    "$ref": "#/$defs/memberName"
+                  },
+                  "direction": {
+                    "enum": [
+                      "asc",
+                      "desc"
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "tiebreaker": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/memberName"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "field",
+                    "direction"
+                  ],
+                  "properties": {
+                    "field": {
+                      "$ref": "#/$defs/memberName"
+                    },
+                    "direction": {
+                      "enum": [
+                        "asc",
+                        "desc"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "fixed": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "field",
+                  "direction"
+                ],
+                "properties": {
+                  "field": {
+                    "$ref": "#/$defs/memberName"
+                  },
+                  "direction": {
+                    "enum": [
+                      "asc",
+                      "desc"
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "pagination": {
+          "type": "object",
+          "required": [
+            "strategy",
+            "limit"
+          ],
+          "properties": {
+            "strategy": {
+              "enum": [
+                "cursor",
+                "offset"
+              ]
+            },
+            "limit": {
+              "type": "object",
+              "required": [
+                "default",
+                "max"
+              ],
+              "properties": {
+                "default": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "max": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "count": {
+          "type": "object",
+          "required": [
+            "strategy"
+          ],
+          "properties": {
+            "strategy": {
+              "enum": [
+                "none",
+                "inline",
+                "operation"
+              ]
+            },
+            "response": {
+              "type": "string",
+              "pattern": "^(/[^/]*)+$"
+            },
+            "operation": {
+              "$ref": "#/$defs/memberName"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "strategy": {
+                    "const": "inline"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "response"
+                ],
+                "not": {
+                  "required": [
+                    "operation"
+                  ]
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "strategy": {
+                    "const": "operation"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "operation",
+                  "response"
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "strategy": {
+                    "const": "none"
+                  }
+                }
+              },
+              "then": {
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "response"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "operation"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "additionalProperties": false
+        },
+        "wire": {
+          "type": "object",
+          "required": [
+            "parameters",
+            "response"
+          ],
+          "properties": {
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "filter": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sort": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "limit": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "cursor": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "offset": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "response": {
+              "type": "object",
+              "required": [
+                "items"
+              ],
+              "properties": {
+                "items": {
+                  "type": "string",
+                  "pattern": "^(/[^/]*)+$"
+                },
+                "next": {
+                  "type": "string",
+                  "pattern": "^(/[^/]*)+$"
+                },
+                "previous": {
+                  "type": "string",
+                  "pattern": "^(/[^/]*)+$"
+                },
+                "more": {
+                  "type": "string",
+                  "pattern": "^(/[^/]*)+$"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "pagination": {
+                "properties": {
+                  "strategy": {
+                    "const": "cursor"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "wire": {
+                "properties": {
+                  "parameters": {
+                    "required": [
+                      "cursor"
+                    ],
+                    "not": {
+                      "required": [
+                        "offset"
+                      ]
+                    }
+                  },
+                  "response": {
+                    "required": [
+                      "items",
+                      "next"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "pagination": {
+                "properties": {
+                  "strategy": {
+                    "const": "offset"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "wire": {
+                "properties": {
+                  "parameters": {
+                    "required": [
+                      "offset"
+                    ],
+                    "not": {
+                      "required": [
+                        "cursor"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "codeName": {
+      "type": "string",
+      "pattern": "^[a-z][A-Za-z0-9]*$"
+    },
+    "errors": {
+      "type": "object",
+      "required": [
+        "format",
+        "validationStatus",
+        "identify",
+        "wire"
+      ],
+      "properties": {
+        "format": {
+          "const": "problem-details"
+        },
+        "validationStatus": {
+          "enum": [
+            400,
+            422
+          ]
+        },
+        "types": {
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "validation",
+              "authentication",
+              "authorization",
+              "not-found",
+              "conflict",
+              "precondition-failed",
+              "precondition-required",
+              "payload-too-large",
+              "unsupported-media-type",
+              "too-many-requests",
+              "unavailable",
+              "internal"
+            ]
+          },
+          "additionalProperties": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "identify": {
+          "enum": [
+            "member",
+            "type"
+          ]
+        },
+        "codeTypes": {
+          "type": "string",
+          "format": "uri-template",
+          "pattern": "\\{code\\}"
+        },
+        "wire": {
+          "type": "object",
+          "required": [
+            "fieldErrors",
+            "field",
+            "locationFormat"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "pattern": "^(/[^/]*)+$"
+            },
+            "fieldErrors": {
+              "type": "string",
+              "pattern": "^(/[^/]*)+$"
+            },
+            "field": {
+              "type": "object",
+              "required": [
+                "location",
+                "code"
+              ],
+              "properties": {
+                "location": {
+                  "type": "string",
+                  "pattern": "^(/[^/]*)+$"
+                },
+                "code": {
+                  "type": "string",
+                  "pattern": "^(/[^/]*)+$"
+                },
+                "detail": {
+                  "type": "string",
+                  "pattern": "^(/[^/]*)+$"
+                }
+              },
+              "additionalProperties": false
+            },
+            "locationFormat": {
+              "enum": [
+                "pointer",
+                "path"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "codes": {
+          "type": "object",
+          "propertyNames": {
+            "allOf": [
+              {
+                "$ref": "#/$defs/codeName"
+              },
+              {
+                "not": {
+                  "enum": [
+                    "required",
+                    "type",
+                    "enum",
+                    "const",
+                    "minLength",
+                    "maxLength",
+                    "pattern",
+                    "format",
+                    "minimum",
+                    "maximum",
+                    "exclusiveMinimum",
+                    "exclusiveMaximum",
+                    "multipleOf",
+                    "minItems",
+                    "maxItems",
+                    "uniqueItems",
+                    "additionalProperties",
+                    "malformed",
+                    "invalidQuery",
+                    "invalidCursor",
+                    "notFound",
+                    "unique",
+                    "reference",
+                    "versionMismatch",
+                    "preconditionRequired",
+                    "maxSize",
+                    "mediaType",
+                    "idempotencyKeyReused",
+                    "precision",
+                    "invalidTransition",
+                    "idempotencyKeyInUse",
+                    "oneOf",
+                    "actorUnresolved"
+                  ]
+                }
+              }
+            ]
+          },
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "category"
+            ],
+            "properties": {
+              "category": {
+                "enum": [
+                  "validation",
+                  "authentication",
+                  "authorization",
+                  "not-found",
+                  "conflict",
+                  "precondition-failed",
+                  "precondition-required",
+                  "payload-too-large",
+                  "unsupported-media-type",
+                  "too-many-requests",
+                  "unavailable",
+                  "internal"
+                ]
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "format": "uri"
+              },
+              "status": {
+                "enum": [
+                  400,
+                  422
+                ]
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "if": {
+              "required": [
+                "status"
+              ]
+            },
+            "then": {
+              "properties": {
+                "category": {
+                  "const": "validation"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "identify": {
+                "const": "member"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "wire": {
+                "required": [
+                  "code"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "identify": {
+                "const": "type"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "codeTypes"
+            ]
+          }
+        }
+      ],
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "unionType": {
+      "type": "object",
+      "required": [
+        "kind",
+        "discriminator",
+        "variants"
+      ],
+      "properties": {
+        "kind": {
+          "const": "union"
+        },
+        "discriminator": {
+          "$ref": "#/$defs/memberName"
+        },
+        "variants": {
+          "type": "object",
+          "minProperties": 2,
+          "propertyNames": {
+            "type": "string",
+            "minLength": 1
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/typeName"
+          }
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "event": {
+      "type": "object",
+      "required": [
+        "type",
+        "source",
+        "subject",
+        "data",
+        "channel",
+        "mode"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+(\\.[a-z0-9-]+)+$"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subject": {
+          "$ref": "#/$defs/propertyPath"
+        },
+        "data": {
+          "$ref": "#/$defs/typeName"
+        },
+        "channel": {
+          "$ref": "#/$defs/externalRef"
+        },
+        "mode": {
+          "enum": [
+            "structured",
+            "binary"
+          ]
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "subscription": {
+      "type": "object",
+      "required": [
+        "event",
+        "handler",
+        "delivery"
+      ],
+      "properties": {
+        "event": {
+          "$ref": "#/$defs/typeName"
+        },
+        "handler": {
+          "const": "authored"
+        },
+        "idempotent": {
+          "type": "boolean"
+        },
+        "ordered": {
+          "type": "boolean"
+        },
+        "delivery": {
+          "type": "object",
+          "required": [
+            "attempts",
+            "deadLetter"
+          ],
+          "properties": {
+            "attempts": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "deadLetter": {
+              "$ref": "#/$defs/externalRef"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "stream": {
+      "type": "object",
+      "required": [
+        "events",
+        "channel",
+        "transport",
+        "replay"
+      ],
+      "properties": {
+        "events": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/typeName"
+          }
+        },
+        "channel": {
+          "$ref": "#/$defs/externalRef"
+        },
+        "transport": {
+          "enum": [
+            "sse",
+            "websocket"
+          ]
+        },
+        "replay": {
+          "type": "string",
+          "pattern": "^P(?:\\d+D)?(?:T(?:\\d+H)?(?:\\d+M)?(?:\\d+(?:\\.\\d+)?S)?)?$"
+        },
+        "resume": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "if": {
+        "properties": {
+          "transport": {
+            "const": "websocket"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "resume"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "resume"
+          ]
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "auth": {
+      "type": "object",
+      "properties": {
+        "providers": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "$ref": "#/$defs/memberName"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "issuer"
+            ],
+            "properties": {
+              "issuer": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https://"
+              },
+              "verification": {
+                "description": "How a server verifies access tokens of this provider: locally (jwt) or by asking the provider (introspection, S6.4).",
+                "enum": [
+                  "jwt",
+                  "introspection"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "apiKeys": {
+          "description": "API keys of services (S6): per name the OpenAPI apiKey scheme and the authored lookup.",
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/memberName"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "scheme",
+              "lookup"
+            ],
+            "properties": {
+              "scheme": {
+                "$ref": "#/$defs/externalRef"
+              },
+              "lookup": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "clients": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/memberName"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "provider",
+              "clientId",
+              "flow"
+            ],
+            "properties": {
+              "provider": {
+                "$ref": "#/$defs/memberName"
+              },
+              "clientId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "flow": {
+                "enum": [
+                  "authorizationCode",
+                  "clientCredentials"
+                ]
+              },
+              "scopes": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "claims": {
+          "type": "object",
+          "properties": {
+            "subject": {
+              "type": "string",
+              "minLength": 1
+            },
+            "roles": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "tenant": {
+              "type": "string",
+              "minLength": 1
+            },
+            "service": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "scopes": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "minLength": 1
+          },
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "scheme"
+            ],
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "scheme": {
+                "$ref": "#/$defs/externalRef"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "providers"
+      ],
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    },
+    "fragment": {
+      "description": "A fragment of a contract over several files: the sections it contributes (K5). Never info, sources or include.",
+      "type": "object",
+      "required": [
+        "rialto"
+      ],
+      "properties": {
+        "rialto": {
+          "$ref": "#/properties/rialto"
+        },
+        "types": {
+          "$ref": "#/properties/types"
+        },
+        "shapes": {
+          "$ref": "#/properties/shapes"
+        },
+        "operations": {
+          "$ref": "#/properties/operations"
+        },
+        "mappings": {
+          "$ref": "#/properties/mappings"
+        },
+        "storage": {
+          "$ref": "#/properties/storage"
+        },
+        "views": {
+          "$ref": "#/properties/views"
+        },
+        "navigation": {
+          "$ref": "#/properties/navigation"
+        },
+        "errors": {
+          "$ref": "#/properties/errors"
+        },
+        "events": {
+          "$ref": "#/properties/events"
+        },
+        "subscriptions": {
+          "$ref": "#/properties/subscriptions"
+        },
+        "streams": {
+          "$ref": "#/properties/streams"
+        },
+        "auth": {
+          "$ref": "#/properties/auth"
+        }
+      },
+      "patternProperties": {
+        "^x-": true
+      },
+      "additionalProperties": false
+    }
+  }
+}
