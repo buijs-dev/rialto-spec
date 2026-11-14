@@ -1,5 +1,5 @@
 # Core
-Status: draft of Specification 1.0.0.
+Status: Specification 1.0.0-rc.1.
 
 The rules every generator follows, whatever profile or platform. 
 The keywords MUST, MUST NOT, SHOULD, SHOULD NOT, and MAY are to be 

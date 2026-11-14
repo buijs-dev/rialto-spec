@@ -1,6 +1,6 @@
 # Overview
 
-Status: draft of Specification 1.0.0.
+Status: Specification 1.0.0-rc.1.
 
 ## Goal
 

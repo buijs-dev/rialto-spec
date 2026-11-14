@@ -1,6 +1,6 @@
 # Contract format
 
-Status: Contract format 1.0.0, part of the draft of Specification 1.0.0. The format is final when the specification reaches 1.0.0.
+Status: Contract format 1.0.0, part of Specification 1.0.0-rc.1. The format is final when the specification reaches 1.0.0.
 
 A Rialto contract is one document, in YAML or JSON, that describes an application for all profiles; it can be written as [several files](#contract-over-several-files). This document defines the envelope, the type system and references. Each profile defines its own section. The structure is formalized in the JSON Schema [contract-1.0.0.schema.json](contract-1.0.0.schema.json). Requirements use the prefix K.
 
