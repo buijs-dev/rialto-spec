@@ -20,6 +20,7 @@ Towards Specification 1.0.0, with contract format 1.0.0, built in slices. This s
 #### Contract format
 
 - Contract format 1.0.0 and its JSON Schema (`spec/contract-1.0.0.schema.json`), complete for every section, with the `$id` `https://rialto.buijs.dev/spec/contract-1.0.0.schema.json`, the address where the site serves it.
+- Every integer of the contract, such as `maxLength`, `maxItems` or `maxSize`, is a 32-bit signed integer: the JSON Schema bounds it at 2147483647.
 - Type system: JSON representation per type, decimals, date-times, durations, map keys, extensible enums, discriminated unions and the `json` and `binary` scalars (K2).
 - `description` (CommonMark) on types, properties, shapes, operations, events and error codes (K3).
 - Sources: OpenAPI, AsyncAPI and SQL documents, including SQL sources over a service's migrations applied in version order (K1.9), and remote sources pinned by hash in `rialto.lock`, with `RIALTO-K010` for a lock that cannot be read or written (K4).
