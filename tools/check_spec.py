@@ -336,6 +336,10 @@ else:
             error(SPLIT, f"does not bundle to {EXAMPLE.name} (K5.1)")
 
     for root_file in sorted((ROOT / "examples" / "contracts" / "invalid").glob("*/contract.rialto.yaml")):
+        # A directory without `include` is one file with what it needs next to it, such as a `rialto.lock`; its check
+        # needs real tooling.
+        if "include" not in (yaml.safe_load(root_file.read_text()) or {}):
+            continue
         expected = re.match(r"# expect: (\S+)", root_file.read_text())
         try:
             bundle(root_file)

@@ -189,6 +189,7 @@ Every contract validator and generator reports contract validation errors with t
 | `RIALTO-K007` | An `include` path matches no file | K5.2 |
 | `RIALTO-K008` | A fragment declares `info`, `sources` or `include` | K5.2 |
 | `RIALTO-K009` | A single-file section (`errors`, `auth`, `navigation`) or top-level extension key appears in two files | K5.4 |
+| `RIALTO-K010` | `rialto.lock` cannot be read, or cannot be written when it must change | K4.5 |
 | `RIALTO-S001` | A declared source file cannot be read or parsed, or an SQL migration path matches no file | K1.2, K1.9, K4.3 |
 | `RIALTO-S002` | An external reference (`<source>#<location>`) does not resolve | K1.2 |
 | `RIALTO-S003` | A remote source can neither be fetched nor found in the cache | K4.3 |
@@ -300,12 +301,13 @@ Examples: none yet: the scenarios of the Shipment example follow in a later slic
 
 ### K4. Remote sources
 
-Examples: test contracts [`invalid/missing-source.yaml`](../examples/contracts/invalid/missing-source.yaml).
+Examples: test contracts [`invalid/lock-directory/`](../examples/contracts/invalid/lock-directory/), [`invalid/missing-source.yaml`](../examples/contracts/invalid/missing-source.yaml).
 
 - **K4.1** A tool MUST read a remote source only when the SHA-256 of its content equals the hash in `rialto.lock`. A remote source not in the lock yet MUST be fetched and added to it.
 - **K4.2** A tool MUST reject a remote source whose content differs from its locked hash, and MUST NOT change a locked hash except by an explicit update command.
 - **K4.3** A tool MUST be able to work offline from a cached copy that matches the lock, and MUST reject a remote source it can neither fetch nor find in its cache. It MUST NOT fall back to another version.
 - **K4.4** A remote source MUST use `https`.
+- **K4.5** A tool MUST report the error `RIALTO-K010` when `rialto.lock` exists but cannot be read as a lock, such as a directory, or when the tool needs to add or change an entry and cannot write the lock. The error names the lock and the sources it could not pin. The tool MUST still report its other findings, and MUST NOT treat an unreadable lock as empty.
 
 ### K5. Contract over several files
 

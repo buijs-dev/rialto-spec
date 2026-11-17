@@ -269,6 +269,14 @@ def test_invalid_contract_over_several_files_that_bundles(repo):
     assert_fails(repo, "fragment-duplicate/contract.rialto.yaml: expected ?, got None")
 
 
+def test_invalid_directory_without_include_is_left_to_real_tooling(repo):
+    directory = repo / "examples" / "contracts" / "invalid" / "lock"
+    (directory / "rialto.lock").mkdir(parents=True)
+    (directory / "contract.rialto.yaml").write_text(
+        '# expect: RIALTO-K010\nrialto: "1.0.0"\ninfo: {name: lock, version: 1.0.0}\n')
+    assert check(repo)[0] == 0
+
+
 def shipment(root, members="[small, large]"):
     directory = root / "examples" / "shipment"
     (directory / "split" / "parts").mkdir(parents=True)
