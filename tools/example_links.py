@@ -30,6 +30,7 @@ fix=defaultdict(set)
 inv=ROOT/'examples/contracts/invalid'
 for f in sorted(list(inv.glob('*.yaml'))+list(inv.glob('*/contract.rialto.yaml'))):
     m=re.match(r"# expect: (\S+)", f.read_text())
+    if not m: continue  # check_spec reports a test contract without '# expect:'
     rel=f.relative_to(ROOT/'examples/contracts').as_posix()
     if f.name=='contract.rialto.yaml': rel=f.parent.relative_to(ROOT/'examples/contracts').as_posix()+'/'
     for r in codes.get(m.group(1),[]): fix[group(r)].add(rel)

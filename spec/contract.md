@@ -260,6 +260,10 @@ Every contract validator and generator reports contract validation errors with t
 
 ## Requirements
 
+### K1. Document
+
+Examples: test contracts [`invalid/duplicate-name.yaml`](../examples/contracts/invalid/duplicate-name.yaml), [`invalid/fragment-duplicate/`](../examples/contracts/invalid/fragment-duplicate/), [`invalid/fragment-not-a-mapping/`](../examples/contracts/invalid/fragment-not-a-mapping/), [`invalid/fragment-version/`](../examples/contracts/invalid/fragment-version/), [`invalid/missing-source.yaml`](../examples/contracts/invalid/missing-source.yaml), [`invalid/not-a-mapping.yaml`](../examples/contracts/invalid/not-a-mapping.yaml), [`invalid/projection-scalar-path.yaml`](../examples/contracts/invalid/projection-scalar-path.yaml), [`invalid/unknown-key.yaml`](../examples/contracts/invalid/unknown-key.yaml), [`invalid/unknown-type.yaml`](../examples/contracts/invalid/unknown-type.yaml), [`invalid/unresolved-external.yaml`](../examples/contracts/invalid/unresolved-external.yaml), [`invalid/unsupported-version.yaml`](../examples/contracts/invalid/unsupported-version.yaml), [`valid/minimal.yaml`](../examples/contracts/valid/minimal.yaml).
+
 - **K1.1** A generator MUST reject a contract whose `rialto` version it does not support (C5.7).
 - **K1.2** Every reference MUST resolve to exactly one element. A generator MUST reject a contract with an unresolved or ambiguous reference.
 - **K1.3** Names MUST be unique within `types` and `shapes` together, and within `operations` and `views` each.

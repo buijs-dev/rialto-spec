@@ -91,3 +91,12 @@ def test_profile_and_listed_valid_test_contracts(repo):
         "Examples: test contracts [`valid/list.yaml`](../../examples/contracts/valid/list.yaml).")
     assert examples_line(query, "Q2") == (
         "Examples: none yet: the scenarios of the Shipment example follow in a later slice.")
+
+
+def test_invalid_test_contract_without_expected_code_is_skipped(repo):
+    # check_spec reports the missing `# expect:` line; example_links links the contract nowhere and goes on.
+    edit(repo / "examples" / "contracts" / "invalid" / "map-key.yaml", "# expect: RIALTO-K006\n", "")
+    links(repo)
+    contract = repo / "spec" / "contract.md"
+    assert "invalid/map-key.yaml" not in contract.read_text()
+    assert examples_line(contract, "K1").endswith("[`valid/minimal.yaml`](../examples/contracts/valid/minimal.yaml).")
