@@ -183,7 +183,7 @@ Examples: none yet: the scenarios of the Shipment example follow in a later slic
 
 ## C5. Validation, configuration, and diagnostics
 
-Examples: test contracts [`invalid/fragment-version/`](../examples/contracts/invalid/fragment-version/), [`invalid/unknown-key.yaml`](../examples/contracts/invalid/unknown-key.yaml), [`invalid/unsupported-version.yaml`](../examples/contracts/invalid/unsupported-version.yaml).
+Examples: test contracts [`invalid/fragment-include-empty/`](../examples/contracts/invalid/fragment-include-empty/), [`invalid/fragment-include-string/`](../examples/contracts/invalid/fragment-include-string/), [`invalid/fragment-version/`](../examples/contracts/invalid/fragment-version/), [`invalid/unknown-key.yaml`](../examples/contracts/invalid/unknown-key.yaml), [`invalid/unsupported-version.yaml`](../examples/contracts/invalid/unsupported-version.yaml).
 
 - **C5.1** Metadata MUST keep enough provenance for actionable diagnostics.
 - **C5.2** Contradictory or ambiguous mappings MUST fail, unless an explicit resolution policy is declared.

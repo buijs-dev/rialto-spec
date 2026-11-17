@@ -29,7 +29,7 @@ Towards Specification 1.0.0, with contract format 1.0.0, built in slices. This s
 
 #### Examples and checks
 
-- Shared test contracts in `examples/contracts` for the contract format and core: documents that are not a mapping (`RIALTO-K001`), schema violations (`RIALTO-K002`), unsupported versions (`RIALTO-K003`), unresolved references (`RIALTO-K004`, `RIALTO-S002`), duplicate names (`RIALTO-K005`), invalid map keys (`RIALTO-K006`), missing sources (`RIALTO-S001`) and contracts over several files (`RIALTO-K003`, `RIALTO-K005`, `RIALTO-K007` to `RIALTO-K009`).
+- Shared test contracts in `examples/contracts` for the contract format and core: documents that are not a mapping (`RIALTO-K001`), schema violations (`RIALTO-K002`), unsupported versions (`RIALTO-K003`), unresolved references (`RIALTO-K004`, `RIALTO-S002`), duplicate names (`RIALTO-K005`), invalid map keys (`RIALTO-K006`), missing sources (`RIALTO-S001`) and contracts over several files (`RIALTO-K002`, `RIALTO-K003`, `RIALTO-K005`, `RIALTO-K007` to `RIALTO-K009`), with `**` in an include path matching any number of segments.
 - `tools/check_spec.py`: unique identifiers, keyword use, capability tables, terminology, links and schema validation of the test contracts and of every contract snippet in the Markdown; it checks the documents and examples that exist.
 - `tools/example_links.py`: the `Examples:` line under every requirement group.
 - `tools/conformance.py`: runs any tool over the shared test contracts, so a claim of conformance can be repeated by anyone; `--jobs` runs contracts in parallel for a command whose runs share nothing.

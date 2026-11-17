@@ -221,6 +221,30 @@ def test_each_rejection_of_a_contract_over_several_files(repo, case, fragment, c
     assert_fails(repo, f"fragments/contract.rialto.yaml: {code}:")
 
 
+@pytest.mark.parametrize("include", ['"parts/*.rialto.yaml"', "[]"])
+def test_include_that_is_not_a_list_of_paths(repo, include):
+    edit(repo.joinpath(*FRAGMENTS, "contract.rialto.yaml"), "[parts/*.rialto.yaml]", include)
+    assert_fails(repo, "fragments/contract.rialto.yaml: RIALTO-K002: include is not a list of at least one path")
+
+
+def test_include_that_ends_in_two_stars_matches_nested_fragments(repo):
+    directory = repo.joinpath(*FRAGMENTS)
+    edit(directory / "contract.rialto.yaml", "[parts/*.rialto.yaml]", "[parts/**]")
+    (directory / "parts" / "deeper" / "still").mkdir(parents=True)
+    (directory / "parts" / "values.rialto.yaml").rename(directory / "parts" / "deeper" / "still" / "values.rialto.yaml")
+    assert check(repo)[0] == 0
+    # The nested fragment is read: a second Thing there is a duplicate.
+    (directory / "parts" / "deeper" / "still" / "again.rialto.yaml").write_text(
+        'rialto: "1.0.0"\ntypes:\n  Thing: {kind: enum, members: [a]}\n')
+    assert_fails(repo, "fragments/contract.rialto.yaml: RIALTO-K005:", "'Thing' is declared twice under types")
+
+
+def test_root_without_include_is_one_file(repo):
+    edit(repo.joinpath(*FRAGMENTS, "contract.rialto.yaml"), "include: [parts/*.rialto.yaml]\n", "")
+    status, out = check(repo)
+    assert "fragments/contract.rialto.yaml" not in out, out
+
+
 def test_fragments_merge_mappings_and_single_file_sections(repo):
     directory = repo.joinpath(*FRAGMENTS)
     (directory / "parts" / "rest.rialto.yaml").write_text('rialto: "1.0.0"\nmappings: []\nx-tool: {a: 1}\n')

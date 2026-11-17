@@ -1,0 +1,5 @@
+# capabilities: domain.entity
+rialto: "1.0.0"
+info: {name: fragments-recursive, version: 1.0.0}
+# ** matches any number of segments: parts/domain/thing.rialto.yaml and parts/domain/values/size.rialto.yaml.
+include: [parts/**]

@@ -45,8 +45,8 @@ def test_missing_examples_while_the_shipment_example_is_not_there(repo):
     links(repo)
     assert examples_line(core, "C1") == "Examples: none yet: the scenarios of the Shipment example follow in a later slice."
     assert examples_line(core, "C7") == "Examples: none: these requirements apply to the specification itself."
-    assert examples_line(core, "C5").startswith(
-        "Examples: test contracts [`invalid/fragment-version/`](../examples/contracts/invalid/fragment-version/), ")
+    assert examples_line(core, "C5").startswith("Examples: test contracts [`invalid/")
+    assert "[`invalid/fragment-version/`](../examples/contracts/invalid/fragment-version/)" in examples_line(core, "C5")
 
 
 def shipment_readme(root, rows=""):

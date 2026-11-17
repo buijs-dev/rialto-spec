@@ -34,7 +34,7 @@ for f in sorted(list(inv.glob('*.yaml'))+list(inv.glob('*/contract.rialto.yaml')
     rel=f.relative_to(ROOT/'examples/contracts').as_posix()
     if f.name=='contract.rialto.yaml': rel=f.parent.relative_to(ROOT/'examples/contracts').as_posix()+'/'
     for r in codes.get(m.group(1),[]): fix[group(r)].add(rel)
-VALID={'valid/errors-identify-type.yaml':['E2'],'valid/fragments/':['K5'],'valid/list.yaml':['Q1'],'valid/link.yaml':['P4'],
+VALID={'valid/errors-identify-type.yaml':['E2'],'valid/fragments/':['K5'],'valid/fragments-recursive/':['K5'],'valid/list.yaml':['Q1'],'valid/link.yaml':['P4'],
         'valid/local-storage.yaml':['K1'],'valid/domain.yaml':['D2','D3'],'valid/minimal.yaml':['K1'],
         'valid/path-location.yaml':['E1','E3'],
         'valid/scope.yaml':['P6'],

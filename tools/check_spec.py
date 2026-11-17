@@ -270,8 +270,13 @@ else:
         root = yaml.safe_load(root_file.read_text())
         base = root_file.parent
         files = set()
-        for pattern in root.pop("include", []):
-            matched = {path for path in base.glob(pattern) if path.is_file() and path != root_file}
+        include = root.pop("include", None)
+        if include is not None and (not isinstance(include, list) or not include):
+            raise Rejected("RIALTO-K002", "include is not a list of at least one path")
+        for pattern in include or []:
+            # `**` matches any number of segments (K5); a pattern that ends in it matches the files below.
+            glob = pattern + "/*" if pattern.endswith("**") else pattern
+            matched = {path for path in base.glob(glob) if path.is_file() and path != root_file}
             if not matched:
                 raise Rejected("RIALTO-K007", f"include '{pattern}' matches no file")
             files |= matched

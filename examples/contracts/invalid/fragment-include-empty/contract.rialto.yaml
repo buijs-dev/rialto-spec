@@ -1,0 +1,5 @@
+# expect: RIALTO-K002
+rialto: "1.0.0"
+info: {name: fragment-include-empty, version: 1.0.0}
+# include lists at least one path.
+include: []
