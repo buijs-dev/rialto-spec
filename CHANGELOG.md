@@ -34,6 +34,7 @@ Towards Specification 1.0.0, with contract format 1.0.0, built in slices. This s
 - `tools/example_links.py`: the `Examples:` line under every requirement group.
 - `tools/conformance.py`: runs any tool over the shared test contracts, so a claim of conformance can be repeated by anyone; `--jobs` runs contracts in parallel for a command whose runs share nothing.
 - `tools/compare_tools.py`: compares the findings of two tools over the test contracts by file, severity, code, pointer and requirement (optionally position and message), as conformance compares only codes.
+- `tools/tests/`: pytest tests of the four tools, run in CI with a coverage report.
 
 #### Project
 

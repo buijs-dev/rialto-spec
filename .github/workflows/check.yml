@@ -1,7 +1,7 @@
 name: Check
 
 # The consistency checks of the specification, with schema validation of the test contracts, the Examples lines,
-# and a build of the site.
+# the tests of the tools with their coverage, and a build of the site.
 # Conformance (tools/conformance.py) does not run here yet: it needs the CLIs of rialto-jvm and rialto-dart, which come
 # with their own slice-0 pull requests, and it runs in their CI against these test contracts.
 on:
@@ -26,6 +26,12 @@ jobs:
         run: |
           python3 tools/example_links.py
           git diff --exit-code -- spec
+      - name: Tests of the tools, with coverage
+        run: |
+          pip install -r tools/tests/requirements.txt
+          python3 -m coverage run --branch --source=tools --omit='tools/tests/*' -m pytest tools/tests -q
+          python3 -m coverage report -m
+          python3 -m coverage report --format=markdown >> "$GITHUB_STEP_SUMMARY"
 
   site:
     runs-on: ubuntu-latest

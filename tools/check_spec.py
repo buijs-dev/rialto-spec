@@ -177,7 +177,8 @@ def anchors(path):
     return {slug(h) for h in re.findall(r"^#+ (.*)$", path.read_text(), re.M)}
 
 
-for path in sorted(p for p in ROOT.rglob("*.md") if ".git" not in p.parts and ".idea" not in p.parts and "site" not in p.parts):
+for path in sorted(p for p in ROOT.rglob("*.md")
+                   if not {".git", ".idea", "site"} & set(p.relative_to(ROOT).parts)):
     text = path.read_text()
     prose = re.sub(r"\]\([^)]*\)", "]", strip_code(text))
     prose = re.sub(r'"bindings?"', "", prose, flags=re.I)  # the word itself, quoted
@@ -347,7 +348,7 @@ for prefix, path in REQUIREMENT_DOCS.items():
     for index, line in enumerate(lines):
         heading = re.match(r"^##+ (" + prefix + r"\d+)\. ", line)
         if heading and not any(l.startswith("Examples: ") for l in lines[index + 1:index + 4]):
-            error(path.relative_to(ROOT), f"{heading.group(1)} has no Examples line (run tools/example_links.py)")
+            error(path, f"{heading.group(1)} has no Examples line (run tools/example_links.py)")
 
 
 # 10. Conformance levels ---------------------------------------------------------------

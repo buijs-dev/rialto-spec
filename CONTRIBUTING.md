@@ -10,6 +10,14 @@
    python3 tools/example_links.py          # must leave the Markdown unchanged
    ```
 
+   After a change to `tools/`, also run its tests:
+
+   ```sh
+   pip install -r tools/tests/requirements.txt
+   python3 -m coverage run --branch --source=tools --omit='tools/tests/*' -m pytest tools/tests -q
+   python3 -m coverage report -m
+   ```
+
 2. Add a line under `[Unreleased]` in the [changelog](CHANGELOG.md).
 
 ## Layout
@@ -29,6 +37,7 @@
 | `tools/conformance.py` | Runs a tool over the shared test contracts |
 | `tools/compare_tools.py` | Compares the findings of two tools over the test contracts, by code, pointer and requirement |
 | `tools/example_links.py` | Writes the `Examples:` lines under the requirement groups |
+| `tools/tests/` | Tests of the tools (pytest) |
 
 A profile has the sections Purpose, Example, Terms, Contract, Capabilities, Requirements and Rationale, in that order. Extra sections may be added after Terms and before Capabilities.
 
