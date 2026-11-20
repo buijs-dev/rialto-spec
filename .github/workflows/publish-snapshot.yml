@@ -1,0 +1,15 @@
+name: Publish Snapshot
+
+# Publishes dev.buijs.rialto:rialto-spec (the test contracts, the JSON Schema and contract.md as a zip) to Repsy on
+# every push to develop. The test suites of rialto-jvm read it.
+on:
+  push:
+    branches: [ develop ]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    uses: buijs-dev/ci-templates/.github/workflows/publish-snapshot.yml@main
+    with:
+      root-dir: ${{ vars.ROOT_DIR || '.' }}
+    secrets: inherit

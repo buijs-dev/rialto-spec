@@ -14,3 +14,7 @@
 __pycache__/
 .coverage
 .pytest_cache/
+
+# Gradle: builds the published artifact
+.gradle/
+/build/
