@@ -30,6 +30,12 @@ The protocol is small, so every tool can follow it:
 
 `--only valid` or `--only invalid`, `--filter <text>` and `-v` (print the output of failing runs) narrow a run. A claim of conformance ([governance](../../GOVERNANCE.md#conformance)) includes the output of a complete run.
 
+### The published test contracts
+
+The test contracts, the JSON Schema and `spec/contract.md` are published as the zip `dev.buijs.rialto:rialto-spec` to
+`https://repo.repsy.io/mvn/buijs-dev/maven` (`./gradlew publishToMavenLocal` builds it locally), at the same paths as in
+this repository. The tests of an implementation unpack a pinned version of it rather than read a checkout next to theirs.
+
 ### Comparing two tools
 
 Conformance checks that each tool reports the expected codes; two tools can still disagree on where a finding is or

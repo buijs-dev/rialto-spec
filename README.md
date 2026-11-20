@@ -4,23 +4,39 @@
 
 **A contract-driven architecture for generated applications.**
 
-Specification 1.0.0, in development: built in slices, see [Status](#status).
+Specification 1.0.0, in development: it is built in slices, see [Status](#status).
+
+## Contents
+
+- [What Rialto is](#what-rialto-is)
+- [Getting started](#getting-started)
+- [Principles](#principles)
+- [Status](#status)
+- [Reading order](#reading-order)
+- [Ecosystem and implementations](#ecosystem-and-implementations)
 
 ## What Rialto is
 
-Rialto is a contract-driven architecture for describing software declaratively across all architectural layers and generating its infrastructure, 
-while generated code and handwritten business logic stay strictly separate.
-Instead of replacing established standards, Rialto acts as the architectural backbone that connects them:
-- **OpenAPI** for HTTP/REST contracts
-- **AsyncAPI** for messaging and event streams
-- **SQL** for persistence schemas
+With Rialto you describe a service once, in a **Rialto contract**: its domain types, its operations, its events, how
+it is stored and how it is shown. Generators read that contract and produce the infrastructure code. Your business
+logic stays handwritten, and regenerating never touches it.
 
-At its center is the **Rialto contract**: a single document that binds external contracts, domain models, mappings, storage definitions, and view models into one unified source of truth. 
-Independent generators across languages (JVM, Dart, TypeScript, Go, etc.) read the same contract and produce code that agrees on identity, constraints, wire formats, and database mappings without drift.
+Rialto does not replace the standards you already use. It connects them:
 
-It consists of:
-- **the specification** (this repository): principles, terminology, the contract format, profiles for all architectural layers, and rules for generated code;
-- **an open ecosystem of tooling and generators**: validation tools, parsers, CLI utilities, build plugins, and language-specific code generators (see [Tooling](docs/tooling.md)).
+- **OpenAPI** for HTTP and REST;
+- **AsyncAPI** for messaging and event streams;
+- **SQL** for the database schema.
+
+The contract points into those documents instead of repeating them, and adds what they do not say: which domain type
+an API schema is, which table holds it, which event it publishes. Generators in any language (JVM, Dart, TypeScript,
+Go, …) read the same contract, so the code they produce agrees on identity, constraints, wire formats and columns.
+
+Rialto consists of:
+
+- **the specification** (this repository): the principles, the terms, the contract format, a profile per
+  architectural layer and the rules for generated code;
+- **an open ecosystem of tools and generators**: validators, command line tools, build plugins and code generators per
+  language (see [Tooling](docs/tooling.md)).
 
 ### How Rialto connects contracts
 
@@ -73,18 +89,44 @@ subscriptions:
     delivery: {attempts: 5, deadLetter: events#/channels/shipmentEventsDeadLetter}
 ```
 
-The full version of this contract, with its OpenAPI, AsyncAPI and SQL documents, is the
-Shipment example, which follows in a later slice.
+The full version of this contract, with its OpenAPI, AsyncAPI and SQL documents, becomes the Shipment example in a
+later slice.
 
-### What is possible with Rialto
+### What Rialto gives you
 
-- **Single architectural truth**: Model domain entities, relations, validation rules, REST routes, asynchronous events (AsyncAPI), object mappings, and database persistence in one cohesive contract.
-- **Cross-language interoperability**: Independent generators in different languages (JVM, Dart, Go, Rust, TypeScript, etc.) produce components that communicate cleanly over the wire without sharing runtime library dependencies.
-- **Strict seam architecture**: Generated adapters handle infrastructure concerns (routing, serialization, schema validation, persistence, transactions). Business logic lives behind explicit, protected seams that are never touched when regenerating contracts.
-- **Early validation in CI/CD**: Contracts and external sources are validated together before any code is generated, catching breaking wire changes, schema conflicts, and undeclared capabilities early in the build pipeline.
-- **Flexible authoring workflows**: Write contracts by hand in YAML/JSON, export them from existing annotated source code, or reference existing external specs.
+- **One source of truth.** Entities, validation rules, REST routes, events, mappings and storage live in one contract.
+- **Components that work together across languages.** Code from different generators talks over the wire without
+  sharing a runtime library.
+- **Generated code and your code stay apart.** Generated adapters handle routing, serialization, validation,
+  persistence and transactions. Your business logic sits behind explicit seams that regeneration never touches.
+- **Mistakes found before any code exists.** The contract and its sources are checked together, so a broken
+  reference or an incompatible change fails the build, not production.
+- **Write it the way you like.** By hand in YAML or JSON, exported from annotated source code, or a mix.
+
+## Getting started
+
+**Write a contract.** Start from the example above and point your editor at the
+[JSON Schema](spec/contract-1.0.0.schema.json) for completion and checks while you type. The
+[contract format](spec/contract.md) explains every section.
+
+**Check it.** A validator such as [rialto-jvm](https://github.com/buijs-dev/rialto-jvm) checks the contract and every
+reference into its sources:
+
+```shell
+rialto validate shipment.rialto.yaml
+```
+
+Every problem comes with a standard code, such as `RIALTO-K004` for an unknown type, and the file and line it is in.
+
+**Build a tool.** Run it over the [shared test contracts](examples/contracts/README.md) to see whether it follows the
+specification:
+
+```shell
+python3 tools/conformance.py -- my-tool validate {contract}
+```
 
 ## Principles
+
 1. **Entity-driven, contract-centered.** Applications are modeled as entities and operations. 
 The contract is the one place every tool reads from and writes to, 
 whether it is written by hand or exported from annotated code.
@@ -124,27 +166,27 @@ specification, its test contracts and documentation, and the tooling and generat
 | 9 | Versioning profile (V) and compatibility | planned |
 | 10 | Ecosystem: generators, conformance levels and the generator protocol (C9) | planned |
 
-Slice 0 brings the whole format, so a contract that uses any section is already valid or invalid against the
-schema; what a section means, and the checks and test contracts of its profile, come with the slice of that profile.
-The Shipment example grows with the slices.
+Slice 0 brings the whole format, so every section of a contract can already be checked against the schema. What a
+section means, with the checks and test contracts of its profile, comes with the slice of that profile. The Shipment
+example grows with the slices.
 
 ## Reading order
+
 1. [Overview](spec/overview.md): purpose, design rules, authoring, components, scope of version 1.
 2. [Contract format](spec/contract.md) and its [JSON Schema](spec/contract-1.0.0.schema.json).
 3. [Core](spec/core.md): terminology and the rules every generator follows.
 4. Profiles, one per layer, in their slices.
 
-Requirements use the keywords MUST, SHOULD, and MAY (BCP 14) and a stable identifier 
-per document (C, K, A, D, E, L, R, M, P, Q, S, U, V). 
-Each document ends with the rationale for its choices.
+Every requirement has a stable id, such as `K1.2`, with a letter per document (C, K, A, D, E, L, R, M, P, Q, S, U,
+V), and uses the keywords MUST, SHOULD and MAY (BCP 14). Every document ends with the rationale for its choices.
 
 ## Ecosystem and implementations
 
-The Rialto specification is standalone, vendor-neutral, and not tied to any single repository or technology stack.
-See [Tooling](docs/tooling.md) for the reference implementations and the [shared test contracts](examples/contracts/README.md)
-for checking a tool against the specification.
+The specification stands on its own: it is vendor-neutral and not tied to one repository or technology stack. Anyone
+may build tools or generators for it. See [Tooling](docs/tooling.md) for the reference implementations, and the
+[shared test contracts](examples/contracts/README.md) for checking a tool against the specification.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for writing rules, [GOVERNANCE.md](GOVERNANCE.md) for how
-decisions are made and the [changelog](CHANGELOG.md) for changes.
+decisions are made and the [CHANGELOG.md](CHANGELOG.md) for changes.
 
 Licensed under the [Apache License 2.0](LICENSE).

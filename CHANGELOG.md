@@ -1,43 +1,59 @@
 # Changelog
 
-All notable changes to this project are documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+All notable changes for readers of the specification and for builders of Rialto tooling are documented in this file.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-Towards Specification 1.0.0, with contract format 1.0.0, built in slices. This section holds slice 0, the foundation.
+The first version, slice 0: the whole contract format 1.0.0 with its JSON Schema, the rules every generator follows,
+and the test contracts that check a tool against them. What each section means for generated code comes with the
+profile of its slice.
 
 ### Added
 
-#### Specification
+**Specification**
 
-- Overview, core terminology and the rules every generator follows (C1–C8).
-- Requirements with stable identifiers per document (C, K, A, D, E, L, M, P, Q, R, S, U, V) and the keywords MUST, SHOULD and MAY (BCP 14).
-- A rationale per document, with the alternatives that were rejected.
+- The [overview](spec/overview.md), [core](spec/core.md) and the [contract format](spec/contract.md). Core defines the
+  terms and the rules every generator follows (C1–C8).
+- Every requirement has a stable id, such as `K1.2`, so tools, tests and findings can cite it. Requirements use MUST,
+  SHOULD and MAY (BCP 14).
+- Every document ends with the rationale for its choices, including the alternatives that were rejected.
 
-#### Contract format
+**Contract format 1.0.0**
 
-- Contract format 1.0.0 and its JSON Schema (`spec/contract-1.0.0.schema.json`), complete for every section, with the `$id` `https://rialto.buijs.dev/spec/contract-1.0.0.schema.json`, the address where the site serves it.
-- Every integer of the contract, such as `maxLength`, `maxItems` or `maxSize`, is a 32-bit signed integer: the JSON Schema bounds it at 2147483647.
-- Type system: JSON representation per type, decimals, date-times, durations, map keys, extensible enums, discriminated unions and the `json` and `binary` scalars (K2).
-- `description` (CommonMark) on types, properties, shapes, operations, events and error codes (K3).
-- Sources: OpenAPI, AsyncAPI and SQL documents, including SQL sources over a service's migrations applied in version order (K1.9), and remote sources pinned by hash in `rialto.lock`, with `RIALTO-K010` for a lock that cannot be read or written (K4).
-- A contract over several files: a root with `include` and fragments merged by name, with one bundled form (K5).
-- Extension keys named after their generator, `x-<generator>-<name>` (K1.8).
-- Standard diagnostic codes (`RIALTO-K*`, `RIALTO-S*`, `RIALTO-P*`) (K1.10). The table lists every code as the reference of the format; the `RIALTO-P*` checks are specified with their profiles.
+- A JSON Schema for every section: [`spec/contract-1.0.0.schema.json`](spec/contract-1.0.0.schema.json), also served
+  at `https://rialto.buijs.dev/spec/contract-1.0.0.schema.json`. Point your editor at it for completion and checks
+  while you write a contract.
+- Types (K2): every type has exactly one JSON form on the wire. Decimals, date-times, durations, map keys, extensible
+  enums, discriminated unions, and `json` and `binary` for free-form and binary data.
+- Every number in a contract (`maxLength`, `maxItems`, `maxSize`, …) is a 32-bit signed integer, at most 2147483647,
+  so every language can hold it.
+- `description` in CommonMark on types, properties, shapes, operations, events and error codes (K3).
+- Sources (K4): a contract points into OpenAPI, AsyncAPI and SQL documents instead of repeating them. A SQL source can
+  be the migrations of a service, applied in version order (K1.9). Remote sources are pinned by hash in `rialto.lock`;
+  a lock that cannot be read or written is an error (`RIALTO-K010`), never an empty lock.
+- Contracts over several files (K5): a root lists its fragments under `include`, and they merge by name into one
+  bundled document.
+- Extension keys `x-<generator>-<name>` for the settings of one generator (K1.8).
+- Standard diagnostic codes (K1.10): `RIALTO-K…` for the format, `RIALTO-S…` for sources and `RIALTO-P…` for the rules
+  of the profiles. Every tool reports the same code for the same problem. The table lists every code already; the
+  `P` rules come with their profiles.
 
-#### Examples and checks
+**Checking a tool**
 
-- Shared test contracts in `examples/contracts` for the contract format and core: documents that are not a mapping (`RIALTO-K001`), schema violations (`RIALTO-K002`), unsupported versions (`RIALTO-K003`), unresolved references (`RIALTO-K004`, `RIALTO-S002`), duplicate names (`RIALTO-K005`), invalid map keys (`RIALTO-K006`), missing sources (`RIALTO-S001`), a `rialto.lock` that is a directory (`RIALTO-K010`) and contracts over several files (`RIALTO-K002`, `RIALTO-K003`, `RIALTO-K005`, `RIALTO-K007` to `RIALTO-K009`), with `**` in an include path matching any number of segments.
-- `tools/check_spec.py`: unique identifiers, keyword use, capability tables, terminology, links and schema validation of the test contracts and of every contract snippet in the Markdown; it checks the documents and examples that exist.
-- `tools/example_links.py`: the `Examples:` line under every requirement group.
-- `tools/conformance.py`: runs any tool over the shared test contracts, so a claim of conformance can be repeated by anyone; `--jobs` runs contracts in parallel for a command whose runs share nothing.
-- `tools/compare_tools.py`: compares the findings of two tools over the test contracts by file, severity, code, pointer and requirement (optionally position and message), as conformance compares only codes.
-- `tools/tests/`: pytest tests of the four tools, run in CI with a coverage report.
+- Test contracts in [`examples/contracts`](examples/contracts/README.md): valid contracts that must pass, and invalid
+  ones that each name the codes they must produce. They cover documents that are not a mapping, schema violations,
+  unsupported versions, unresolved references, duplicate names, invalid map keys, missing sources, an unusable
+  `rialto.lock` and contracts over several files.
+- `tools/conformance.py` runs any tool over the test contracts and reports per contract whether it passed, so anyone
+  can repeat a claim of conformance.
+- `tools/compare_tools.py` compares the findings of two tools in detail: file, severity, code, pointer and
+  requirement.
+- The test contracts, the JSON Schema and `contract.md` are published together as `dev.buijs.rialto:rialto-spec`, so a
+  tool can test against a fixed version of them.
 
-#### Project
+**Project**
 
-- README, contributing guide, governance, notice and licence (Apache 2.0).
-- The site at `https://rialto.buijs.dev/`, built from the Markdown of this repository, and the CI that checks the specification and deploys the site.
+- The site [rialto.buijs.dev](https://rialto.buijs.dev/), built from this repository.
+- Licensed under the Apache License 2.0.
