@@ -1,0 +1,13 @@
+# expect: RIALTO-K002
+rialto: "1.0.0"
+info: {name: integer-overflow, version: 1.0.0}
+types:
+  Note:
+    kind: value
+    properties:
+      text: {type: string}
+shapes:
+  WriteNote:
+    source: Note
+    properties:
+      text: {role: caller, maxLength: 99999999999999}

@@ -1,0 +1,44 @@
+{
+  "openapi": "3.1.0",
+  "info": {"title": "Support API", "version": "2.0.0"},
+  "components": {
+    "securitySchemes": {"bearer": {"type": "http", "scheme": "bearer"}},
+    "schemas": {
+      "Thing": {"type": "object", "properties": {"id": {"type": "string", "format": "uuid"}}},
+      "Page": {
+        "type": "object",
+        "properties": {
+          "items": {"type": "array", "items": {"$ref": "#/components/schemas/Thing"}},
+          "next": {"type": ["string", "null"]}
+        }
+      },
+      "Problem": {
+        "type": "object",
+        "properties": {"type": {"type": "string"}, "title": {"type": "string"}, "status": {"type": "integer"}}
+      }
+    }
+  },
+  "paths": {
+    "/things": {
+      "get": {
+        "operationId": "listThings",
+        "security": [{"bearer": ["things:read"]}],
+        "parameters": [{"name": "limit", "in": "query", "schema": {"type": "integer"}}],
+        "responses": {
+          "200": {"description": "Things", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Page"}}}},
+          "400": {"description": "Invalid", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/Problem"}}}}
+        }
+      }
+    },
+    "/things/{thingId}": {
+      "get": {
+        "operationId": "getThing",
+        "security": [{"bearer": ["things:read"]}],
+        "parameters": [{"name": "thingId", "in": "path", "required": true, "schema": {"type": "string", "format": "uuid"}}],
+        "responses": {
+          "200": {"description": "Thing", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Thing"}}}}
+        }
+      }
+    }
+  }
+}

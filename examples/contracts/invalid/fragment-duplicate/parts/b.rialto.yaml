@@ -1,0 +1,3 @@
+rialto: "1.0.0"
+types:
+  Thing: {kind: value, properties: {id: {type: uuid}}}

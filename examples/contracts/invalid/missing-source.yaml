@@ -1,0 +1,6 @@
+# expect: RIALTO-S001
+# capabilities: none
+rialto: "1.0.0"
+info: {name: missing-source, version: 1.0.0}
+sources:
+  api: {kind: openapi, path: ../support/absent.json, version: 1.0.0, status: current}

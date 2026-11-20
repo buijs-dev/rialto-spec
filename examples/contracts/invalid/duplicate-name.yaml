@@ -1,0 +1,8 @@
+# expect: RIALTO-K005
+# capabilities: domain.entity, domain.shape
+rialto: "1.0.0"
+info: {name: duplicate-name, version: 1.0.0}
+types:
+  Thing: {kind: entity, identity: [id], properties: {id: {type: uuid}}}
+shapes:
+  Thing: {source: Thing, properties: {id: {role: caller}}}

@@ -1,0 +1,4 @@
+# expect: RIALTO-K002
+rialto: "1.0.0"
+info: {name: unknown-key, version: 1.0.0}
+entities: {}

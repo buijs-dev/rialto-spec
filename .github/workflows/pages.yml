@@ -1,0 +1,28 @@
+name: Pages
+
+# Builds the specification site (site/) from the Markdown in this repository and deploys it to GitHub Pages, at
+# https://rialto.buijs.dev/. It deploys from develop, so the site follows every merged slice (a snapshot of the docs);
+# a release is a tag on main.
+# SPEC_SITE and SPEC_BASE (repository variables) override where it is served; empty means https://rialto.buijs.dev/.
+on:
+  push:
+    branches: [ develop ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  pages:
+    uses: buijs-dev/ci-templates/.github/workflows/astro-pages.yml@main
+    with:
+      root-dir: site
+      # .env carries SPEC_SITE and SPEC_BASE into the build (astro.config.mjs and scripts/sync.mjs); empty means the default.
+      prebuild: |
+        printf 'SPEC_SITE=%s\nSPEC_BASE=%s\n' '${{ vars.SPEC_SITE }}' '${{ vars.SPEC_BASE }}' > .env

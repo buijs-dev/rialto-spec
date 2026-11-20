@@ -1,0 +1,7 @@
+# expect: RIALTO-K010
+# capabilities: none
+rialto: "1.0.0"
+info: {name: lock-directory, version: 1.0.0}
+# rialto.lock next to this file is a directory, not a lock.
+sources:
+  api: {kind: openapi, path: "https://api.example.invalid/openapi.json", version: 1.0.0, status: current}

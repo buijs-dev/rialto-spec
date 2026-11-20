@@ -1,0 +1,3 @@
+rialto: "1.0.0"
+sources:
+  api: {kind: openapi, path: ../../../support/api.json, version: 1.0.0, status: current}
