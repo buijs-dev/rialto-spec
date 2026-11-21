@@ -7,14 +7,25 @@ Everything needed to read and validate a contract is in this repository: the [co
 with its [JSON Schema](../spec/contract-1.0.0.schema.json) and the [shared test contracts](../examples/contracts/README.md).
 Anyone may build tooling or generators for it.
 
-## Reference implementations
+## Reference implementation
 
-The owner develops these alongside the specification, slice by slice:
+The owner develops [rialto-jvm](https://github.com/buijs-dev/rialto-jvm) alongside the specification, slice by slice:
+the command-line tool `rialto`, a Gradle plugin, and a library with a typed contract model.
 
-- [rialto-jvm](https://github.com/buijs-dev/rialto-jvm): tooling for JVM projects, with a typed contract model and a
-  command-line tool.
-- [rialto-dart](https://github.com/buijs-dev/rialto-dart): the same for Dart and Flutter.
+In slice 0 it brings loading, validation (`rialto validate`) and bundling (`rialto bundle`) of contracts, with the
+[standard diagnostic codes](../spec/contract.md#standard-diagnostic-codes).
 
-In slice 0 both bring loading, validation (`validate`) and bundling (`bundle`) of contracts, with the
-[standard diagnostic codes](../spec/contract.md#standard-diagnostic-codes). The rest of this page, with generators,
-the registry and how to write a generator, follows with the slices that bring them.
+## Conformance
+
+`rialto conformance` runs a command once per [shared test contract](../examples/contracts/README.md) and reports
+which it passes. The command can be any tool, in any language:
+
+```sh
+rialto conformance --spec <checkout of this repository> -- <your tool> validate {contract}
+```
+
+A valid test contract passes when the command exits with `0`. An invalid one passes when the command exits with
+another status and its output names every code in the `# expect: RIALTO-…` lines of the test contract.
+
+The rest of this page, with generators, the registry and how to write a generator, follows with the slices that
+bring them.

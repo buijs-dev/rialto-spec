@@ -1,0 +1,10 @@
+name: rialto_spec_tools
+description: The checks of the documents of the Rialto specification, and the script that writes their Examples lines.
+publish_to: none
+
+environment:
+  sdk: ^3.5.0
+
+dev_dependencies:
+  lints: ^5.0.0
+  test: ^1.25.0

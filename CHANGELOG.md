@@ -43,15 +43,13 @@ profile of its slice.
 **Checking a tool**
 
 - Test contracts in [`examples/contracts`](examples/contracts/README.md): valid contracts that must pass, and invalid
-  ones that each name the codes they must produce. They cover documents that are not a mapping, schema violations,
-  unsupported versions, unresolved references, duplicate names, invalid map keys, missing sources, an unusable
-  `rialto.lock` and contracts over several files.
-- `tools/conformance.py` runs any tool over the test contracts and reports per contract whether it passed, so anyone
-  can repeat a claim of conformance.
-- `tools/compare_tools.py` compares the findings of two tools in detail: file, severity, code, pointer and
-  requirement.
-- The test contracts, the JSON Schema and `contract.md` are published together as `dev.buijs.rialto:rialto-spec`, so a
-  tool can test against a fixed version of them.
+  ones that each name the codes they must produce. They cover documents that are not a mapping, a key that is used
+  twice, a file with two documents, schema violations, unsupported versions, unresolved references, duplicate names,
+  invalid map keys, missing sources, an unusable `rialto.lock` and contracts over several files.
+- `rialto conformance`, of [rialto-jvm](https://github.com/buijs-dev/rialto-jvm), runs any tool over the test
+  contracts and reports per contract whether it passed, so anyone can repeat a claim of conformance.
+- The test contracts, the JSON Schema and the Markdown of the specification are published together as
+  `dev.buijs.rialto:rialto-spec`, so a tool can test against a fixed version of them.
 
 **Project**
 

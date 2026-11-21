@@ -1,0 +1,6 @@
+# expect: RIALTO-K002
+# `types` of the root is no mapping. A fragment has types too, but merging them in must not hide the mistake.
+rialto: "1.0.0"
+info: {name: fragment-root-section, version: 1.0.0}
+types: 42
+include: [parts/*.rialto.yaml]

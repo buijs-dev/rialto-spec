@@ -1,0 +1,7 @@
+# expect: RIALTO-K001
+# A contract is one document: a second one in the same file would be dropped without a word.
+rialto: "1.0.0"
+info: {name: two-documents, version: 1.0.0}
+---
+rialto: "1.0.0"
+info: {name: second-document, version: 1.0.0}

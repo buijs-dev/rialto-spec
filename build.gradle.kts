@@ -6,13 +6,14 @@ plugins {
 // The files the test suites of the implementations read, at their paths in this repository: unpacked, the archive
 // is a sparse checkout of rialto-spec.
 val specZip = tasks.register<Zip>("specZip") {
-    description = "Packs the test contracts, the JSON Schema and the contract specification."
+    description = "Packs the test contracts, the JSON Schema and the Markdown of the specification."
     group = "build"
     archiveBaseName = "rialto-spec"
     from(layout.projectDirectory) {
         include("examples/**")
-        include("spec/contract-1.0.0.schema.json")
-        include("spec/contract.md")
+        include("spec/**")
+        include("docs/**")
+        include("README.md")
     }
 }
 

@@ -1,0 +1,16 @@
+# capabilities: domain.entity, domain.projection
+# `parent` is a NodeView, so `parent.id` is the `id` of a NodeView, which is the `id` of a Node: the path resolves,
+# although it passes through the projection that declares it (K1.2).
+rialto: "1.0.0"
+info: {name: projection-through-itself, version: 1.0.0}
+types:
+  Node:
+    kind: entity
+    identity: [id]
+    properties:
+      id: {type: uuid}
+      parent: {type: NodeView}
+  NodeView:
+    kind: projection
+    source: Node
+    properties: {id: id, parentId: parent.id}

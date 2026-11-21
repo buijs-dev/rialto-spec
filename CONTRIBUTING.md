@@ -2,20 +2,22 @@
 
 ## Before you open a pull request
 
-1. Run the checks; they must report OK:
+1. Run the checks; they must report OK. They are Dart scripts and need only the [Dart SDK](https://dart.dev/get-dart):
 
    ```sh
-   pip install -r tools/requirements.txt   # optional, enables schema validation
-   python3 tools/check_spec.py
-   python3 tools/example_links.py          # must leave the Markdown unchanged
+   (cd tools && dart pub get)               # once
+   dart run tools/bin/check_spec.dart
+   dart run tools/bin/example_links.dart    # must leave the Markdown unchanged
    ```
+
+   The checks cover the documents: identifiers, key words, references, terms, links and the `Examples:` lines. Whether
+   an example is a valid contract is checked by the tooling: [rialto-jvm](https://github.com/buijs-dev/rialto-jvm)
+   tests itself against the test contracts and the snippets of this repository.
 
    After a change to `tools/`, also run its tests:
 
    ```sh
-   pip install -r tools/tests/requirements.txt
-   python3 -m coverage run --branch --source=tools --omit='tools/tests/*' -m pytest tools/tests -q
-   python3 -m coverage report -m
+   cd tools && dart test && dart analyze && dart format --output=none --set-exit-if-changed .
    ```
 
 2. Add a line under `[Unreleased]` in the [changelog](CHANGELOG.md).
@@ -33,11 +35,9 @@
 | `site/` | The site at [rialto.buijs.dev](https://rialto.buijs.dev/), built from the Markdown of this repository |
 | `examples/shipment/` | The one example every document draws from (grows with the slices) |
 | `examples/contracts/` | Shared test contracts every implementation must validate the same way |
-| `tools/check_spec.py` | Consistency checks |
-| `tools/conformance.py` | Runs a tool over the shared test contracts |
-| `tools/compare_tools.py` | Compares the findings of two tools over the test contracts, by code, pointer and requirement |
-| `tools/example_links.py` | Writes the `Examples:` lines under the requirement groups |
-| `tools/tests/` | Tests of the tools (pytest) |
+| `tools/bin/check_spec.dart` | Consistency checks of the documents |
+| `tools/bin/example_links.dart` | Writes the `Examples:` lines under the requirement groups |
+| `tools/lib/`, `tools/test/` | The code of both scripts, and its tests |
 
 A profile has the sections Purpose, Example, Terms, Contract, Capabilities, Requirements and Rationale, in that order. Extra sections may be added after Terms and before Capabilities.
 
@@ -72,7 +72,7 @@ Write a requirement as a list item starting with its identifier:
 - Add a MUST NOT only for a pitfall the positive rule does not already exclude.
 - Use "binding" only as field binding, operation binding or protocol binding (as CloudEvents defines it).
 - Implementation status and known gaps belong in the implementation's repository.
-- Every requirement group shows its use: a line `Examples:` under its heading links to the Shipment scenarios and test contracts that exercise it. Run `python3 tools/example_links.py` after adding a scenario or test contract.
+- Every requirement group shows its use: a line `Examples:` under its heading links to the Shipment scenarios and test contracts that exercise it. Run `dart run tools/bin/example_links.dart` after adding a scenario or test contract.
 
 ## What the checks cover
 
