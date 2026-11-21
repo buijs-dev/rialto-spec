@@ -33,7 +33,7 @@ to become a maintainer; the owner makes that decision in public, in an issue.
    together today, or what a generator cannot express.
 2. **Send a pull request** that follows [CONTRIBUTING.md](CONTRIBUTING.md): the requirement with its
    identifier, the rationale, an example, a shared test contract where a diagnostic is involved, and a
-   line in the [changelog](CHANGELOG.md). `python3 tools/check_spec.py` must report OK.
+   line in the [changelog](CHANGELOG.md). `dart run tools/bin/check_spec.dart` must report OK.
 3. **Review.** A maintainer reviews it. A change that affects a published profile also needs a note on
    compatibility: which existing contracts and generators it breaks, if any.
 4. **Merge.** The owner or a maintainer merges. The change is part of the next release.
@@ -59,7 +59,7 @@ renumbered or reused.
 A tool is **conformant with Rialto 1.0.0** for a profile when it satisfies the requirements of that
 profile that apply to its role, and when it passes the shared test contracts in
 `examples/contracts` for that profile: every valid contract is accepted, and every invalid contract is
-rejected with the diagnostic codes it names. `tools/conformance.py` checks this for any tool
+rejected with the diagnostic codes it names. `rialto conformance` checks this for any tool
 ([running the test contracts](examples/contracts/README.md#running-the-test-contracts)).
 
 - A claim names the specification version and a conformance level
@@ -68,8 +68,8 @@ rejected with the diagnostic codes it names. `tools/conformance.py` checks this 
   Rialto 1.0.0: Starter (server)"*. It links to the generator's own documentation of the
   generator obligations. The conformance levels and the generator obligations are defined in Generators, which
   follows in slice 10.
-- For a level, the claim includes a run of `tools/conformance.py --level <level>`.
-- A claim includes the output of a complete run of `tools/conformance.py`, so anyone can repeat it.
+- For a level, the claim includes a run of `rialto conformance --level <level>`; the option follows in slice 10.
+- A claim includes the output of a complete run of `rialto conformance`, so anyone can repeat it.
 - Nobody has to ask permission to claim conformance. A claim that turns out to be wrong is corrected by
   an issue, first with the implementer.
 - Please use the name "Rialto" for the specification only. A tool that implements part of it says which
@@ -91,8 +91,7 @@ Other tooling is added to the tooling overview through a pull request that links
 
 ## Reference implementations
 
-The owner maintains [rialto-jvm](https://github.com/buijs-dev/rialto-jvm),
-[rialto-dart](https://github.com/buijs-dev/rialto-dart) and the reference generators, which the
+The owner maintains [rialto-jvm](https://github.com/buijs-dev/rialto-jvm) and the reference generators, which the
 [tooling overview](docs/tooling.md) lists as they arrive. When an implementation and the specification
 disagree, the specification is right, and the disagreement is filed as an issue in the repository of the
 implementation. If the specification is wrong or unclear, the issue goes in this repository, and the

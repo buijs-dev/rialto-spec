@@ -1,0 +1,5 @@
+# The analysis of this package only: without it, the analyzer takes the options of a directory above the checkout.
+include: package:lints/recommended.yaml
+
+formatter:
+  page_width: 120

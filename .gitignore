@@ -10,10 +10,8 @@
 /site/public/llms.txt
 /site/public/llms-full.txt
 
-# Python
-__pycache__/
-.coverage
-.pytest_cache/
+# Dart: the tools
+/tools/.dart_tool/
 
 # Gradle: builds the published artifact
 .gradle/

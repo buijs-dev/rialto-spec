@@ -122,7 +122,7 @@ Every problem comes with a standard code, such as `RIALTO-K004` for an unknown t
 specification:
 
 ```shell
-python3 tools/conformance.py -- my-tool validate {contract}
+rialto conformance --spec . -- my-tool validate {contract}
 ```
 
 ## Principles
@@ -154,7 +154,7 @@ specification, its test contracts and documentation, and the tooling and generat
 
 | Slice | Content | Status |
 |---|---|---|
-| 0 | Foundation: the whole contract format and its [JSON Schema](spec/contract-1.0.0.schema.json), [core](spec/core.md) (C1–C8), [contract](spec/contract.md) (K), the shared test contracts for the format, the tools | this repository |
+| 0 | Foundation: the whole contract format and its [JSON Schema](spec/contract-1.0.0.schema.json), [core](spec/core.md) (C1–C8), [contract](spec/contract.md) (K), the shared test contracts for the format | this repository |
 | 1 | Domain and mapping profiles (D, M) | planned |
 | 2 | REST and errors profiles (R, E) | planned |
 | 3 | Persistence profile (P) | planned |
@@ -183,7 +183,7 @@ V), and uses the keywords MUST, SHOULD and MAY (BCP 14). Every document ends wit
 ## Ecosystem and implementations
 
 The specification stands on its own: it is vendor-neutral and not tied to one repository or technology stack. Anyone
-may build tools or generators for it. See [Tooling](docs/tooling.md) for the reference implementations, and the
+may build tools or generators for it. See [Tooling](docs/tooling.md) for the reference implementation, and the
 [shared test contracts](examples/contracts/README.md) for checking a tool against the specification.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for writing rules, [GOVERNANCE.md](GOVERNANCE.md) for how

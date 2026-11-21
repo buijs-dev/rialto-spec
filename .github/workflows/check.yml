@@ -1,9 +1,9 @@
 name: Check
 
-# The consistency checks of the specification, with schema validation of the test contracts, the Examples lines,
-# the tests of the tools with their coverage, and a build of the site.
-# Conformance (tools/conformance.py) does not run here yet: it needs the CLIs of rialto-jvm and rialto-dart, which come
-# with their own slice-0 pull requests, and it runs in their CI against these test contracts.
+# The consistency checks of the documents of the specification, the Examples lines, the tests of the tools, and a
+# build of the site. The tools are Dart scripts in tools/; they need the Dart SDK and nothing else.
+# Whether the examples are valid contracts is not checked here: that needs the tooling. rialto-jvm tests itself
+# against the test contracts and the snippets of this repository, and runs the conformance (rialto conformance).
 on:
   push:
     branches: [ main, develop ]
@@ -17,21 +17,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-      - run: pip install -r tools/requirements.txt
-      - run: python3 tools/check_spec.py
+      - uses: dart-lang/setup-dart@v1
+      - name: Get the dependencies of the tools
+        working-directory: tools
+        run: dart pub get
+      - name: Check the documents
+        run: dart run tools/bin/check_spec.dart
       - name: Examples lines are up to date
         run: |
-          python3 tools/example_links.py
+          dart run tools/bin/example_links.dart
           git diff --exit-code -- spec
-      - name: Tests of the tools, with coverage
+      - name: Tests, analysis and formatting of the tools
+        working-directory: tools
         run: |
-          pip install -r tools/tests/requirements.txt
-          python3 -m coverage run --branch --source=tools --omit='tools/tests/*' -m pytest tools/tests -q
-          python3 -m coverage report -m
-          python3 -m coverage report --format=markdown >> "$GITHUB_STEP_SUMMARY"
+          dart test
+          dart analyze
+          dart format --output=none --set-exit-if-changed .
 
   site:
     runs-on: ubuntu-latest

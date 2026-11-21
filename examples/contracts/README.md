@@ -9,17 +9,18 @@ the codes are defined in the [standard diagnostic codes](../../spec/contract.md#
 
 ## Running the test contracts
 
-`tools/conformance.py` runs any tool over every test contract and reports per contract whether it passed:
+`rialto conformance`, the conformance runner of [rialto-jvm](https://github.com/buijs-dev/rialto-jvm), runs any tool
+over every test contract and reports per contract whether it passed. `--spec` is a checkout of this repository:
 
 ```sh
-python3 tools/conformance.py -- rialto validate {contract}
+rialto conformance --spec . -- rialto validate {contract}
 ```
 
 ```text
 PASS valid/minimal.yaml
 FAIL invalid/unknown-type.yaml: missing RIALTO-K004
 
-16 passed, 1 failed; command: rialto validate '{contract}'
+16 passed, 1 failed; command: rialto validate {contract}
 ```
 
 The protocol is small, so every tool can follow it:
@@ -28,30 +29,14 @@ The protocol is small, so every tool can follow it:
 - A valid contract passes when the command exits with 0.
 - An invalid contract passes when the command exits with another status and prints every expected code, on stdout or stderr, in any format.
 
-`--only valid` or `--only invalid`, `--filter <text>` and `-v` (print the output of failing runs) narrow a run. A claim of conformance ([governance](../../GOVERNANCE.md#conformance)) includes the output of a complete run.
+`--jobs <n>` runs `<n>` test contracts at a time, and `--verbose` prints the output of failing runs. A claim of conformance ([governance](../../GOVERNANCE.md#conformance)) includes the output of a complete run.
 
 ### The published test contracts
 
-The test contracts, the JSON Schema and `spec/contract.md` are published as the zip `dev.buijs.rialto:rialto-spec` to
-`https://repo.repsy.io/mvn/buijs-dev/maven` (`./gradlew publishToMavenLocal` builds it locally), at the same paths as in
-this repository. The tests of an implementation unpack a pinned version of it rather than read a checkout next to theirs.
-
-### Comparing two tools
-
-Conformance checks that each tool reports the expected codes; two tools can still disagree on where a finding is or
-which requirement it names (K1.5). `tools/compare_tools.py` runs two commands over every test contract (and, once it is
-there, both forms of the Shipment example), reads their machine-readable output (`--format json`, see the
-[standard diagnostic codes](../../spec/contract.md#standard-diagnostic-codes)) and reports every finding that only one
-of them reports:
-
-```sh
-python3 tools/compare_tools.py --jobs 8 --a 'rialto-jvm validate --format json {contract}' \
-    --b 'rialto-dart validate --format json {contract}'
-```
-
-A finding is compared by file, severity, code, pointer and requirement. `--positions` adds line and column, and
-`--messages` adds message and hint, which are free text and may differ between tools. The exit status is 0 when the
-tools agree on every contract.
+The test contracts, the JSON Schema and the Markdown of the specification are published as the zip
+`dev.buijs.rialto:rialto-spec` to `https://repo.repsy.io/mvn/buijs-dev/maven` (`./gradlew publishToMavenLocal` builds it
+locally), at the same paths as in this repository. The tests of an implementation unpack a pinned version of it rather
+than read a checkout next to theirs; unpacked, it is also what `--spec` takes.
 
 ### Capabilities and levels
 
