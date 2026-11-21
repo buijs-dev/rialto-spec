@@ -6,6 +6,7 @@ import 'package:rialto_spec_tools/check_spec.dart';
 /// argument it checks the repository this script is in. The exit code is 0 when every check passes, else 1.
 void main(List<String> arguments) {
   final root = arguments.isEmpty ? Directory.fromUri(Platform.script.resolve('../../')) : Directory(arguments.first);
+
   final report = checkSpec(root);
   if (report.errors.isEmpty) {
     stdout.writeln('OK: ${report.requirements} requirements, all checks passed.');

@@ -29,7 +29,9 @@ int writeExampleLinks(Directory root) {
       final heading = match.group(0)!;
       final group = match.group(2)!;
       final examples = _examples(group, testContracts[group] ?? {}, up, shipmentExists);
-      if (examples == null) return heading;
+      if (examples == null) {
+        return heading;
+      }
 
       groupsWithExamples++;
       return '$heading\n\nExamples: $examples.';
@@ -62,7 +64,9 @@ final _requirement = RegExp(r'[ACKDELMPQRSUV]\d+\.\d+');
 
 /// What follows `Examples: ` for [group], or null when the group gets no line.
 String? _examples(String group, Set<String> testContracts, String up, bool shipmentExists) {
-  if (exemptGroups.containsKey(group)) return exemptGroups[group];
+  if (exemptGroups.containsKey(group)) {
+    return exemptGroups[group];
+  }
 
   if (testContracts.isNotEmpty) {
     final links = (testContracts.toList()..sort()).map((path) => '[`$path`](${up}examples/contracts/$path)');
@@ -89,7 +93,11 @@ Map<String, Set<String>> _testContractsByGroup(SpecRepository repository) {
   validTestContracts.forEach((path, groups) {
     final exists =
         FileSystemEntity.typeSync('${repository.root.path}/examples/contracts/$path') != FileSystemEntityType.notFound;
-    if (!exists) return;
+
+    if (!exists) {
+      return;
+    }
+
     for (final group in groups) {
       add(group, path);
     }
@@ -103,7 +111,9 @@ Map<String, List<String>> _requirementsByCode(SpecRepository repository) {
   final byCode = <String, List<String>>{};
   for (final line in repository.file('spec/contract.md').readAsLinesSync()) {
     final row = _codeRow.firstMatch(line);
-    if (row == null) continue;
+    if (row == null) {
+      continue;
+    }
 
     byCode[row.group(1)!] = _requirement.allMatches(row.group(2)!).map((match) => match.group(0)!).toList();
   }
