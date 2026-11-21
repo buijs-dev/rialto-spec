@@ -1,0 +1,7 @@
+rialto: "1.0.0"
+types:
+  Thing:
+    kind: entity
+    identity: [id]
+    properties:
+      id: {type: uuid}
