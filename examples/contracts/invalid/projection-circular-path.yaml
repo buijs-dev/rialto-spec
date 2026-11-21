@@ -1,0 +1,16 @@
+# expect: RIALTO-K004
+# capabilities: domain.entity, domain.projection
+# The path of `again` leads back to `again` itself, so it names no property (K1.2).
+rialto: "1.0.0"
+info: {name: projection-circular-path, version: 1.0.0}
+types:
+  Node:
+    kind: entity
+    identity: [id]
+    properties:
+      id: {type: uuid}
+      parent: {type: NodeView}
+  NodeView:
+    kind: projection
+    source: Node
+    properties: {id: id, again: parent.again}
