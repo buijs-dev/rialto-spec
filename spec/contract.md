@@ -68,10 +68,11 @@ A reference has the form `<source>#<location>`:
 
 Names without `#` refer to elements of the contract itself: a type, shape, operation or view name, or a property path such as `destination.street`.
 
-**Remote sources.** A source at an `https` URL, such as the OpenAPI document another team publishes, is pinned in `rialto.lock` next to the contract: the SHA-256 of its content, in lowercase hexadecimal, per URL. The lock is committed with the contract, so every build reads the same document until it is updated on purpose.
+**Remote sources.** A source at an `https` URL, such as the OpenAPI document another team publishes, is pinned in the lock of the contract: the SHA-256 of its content, in lowercase hexadecimal, per URL. The lock is the file next to the root named after it, `shipment.rialto.lock` for `shipment.rialto.yaml`, and names the root it belongs to, so contracts in one directory each have their own. The lock is committed with the contract, so every build reads the same document until it is updated on purpose.
 
 ```yaml
-# rialto.lock
+# shipment.rialto.lock
+contract: shipment.rialto.yaml
 sources:
   "https://api.example.com/shipments/openapi.json": "3f2a…9c1e"
 ```
@@ -189,11 +190,11 @@ Every contract validator and generator reports contract validation errors with t
 | `RIALTO-K007` | An `include` path matches no file | K5.2 |
 | `RIALTO-K008` | A fragment declares `info`, `sources` or `include` | K5.2 |
 | `RIALTO-K009` | A single-file section (`errors`, `auth`, `navigation`) or top-level extension key appears in two files | K5.4 |
-| `RIALTO-K010` | `rialto.lock` cannot be read, or cannot be written when it must change | K4.5 |
+| `RIALTO-K010` | The lock of the contract cannot be read, belongs to another contract, or cannot be written when it must change | K4.5, K4.7 |
 | `RIALTO-S001` | A declared source file cannot be read or parsed, or an SQL migration path matches no file | K1.2, K1.9, K4.3 |
 | `RIALTO-S002` | An external reference (`<source>#<location>`) does not resolve | K1.2 |
 | `RIALTO-S003` | A remote source can neither be fetched nor found in the cache | K4.3 |
-| `RIALTO-S004` | A remote source differs from its hash in `rialto.lock` | K4.2 |
+| `RIALTO-S004` | A remote source differs from its hash in the lock of the contract | K4.2 |
 | `RIALTO-S005` | A remote source does not use `https` | K4.4 |
 | `RIALTO-P001` | An entity identity property does not exist on the entity | D2.2 |
 | `RIALTO-P002` | Union variants mix entities and value objects, a variant is a union, or entity variants do not share one identity type | D2.6 |
@@ -301,13 +302,15 @@ Examples: none yet: the scenarios of the Shipment example follow in a later slic
 
 ### K4. Remote sources
 
-Examples: test contracts [`invalid/lock-directory/`](../examples/contracts/invalid/lock-directory/), [`invalid/missing-source.yaml`](../examples/contracts/invalid/missing-source.yaml).
+Examples: test contracts [`invalid/lock-directory/`](../examples/contracts/invalid/lock-directory/), [`invalid/lock-other-contract/`](../examples/contracts/invalid/lock-other-contract/), [`invalid/missing-source.yaml`](../examples/contracts/invalid/missing-source.yaml).
 
-- **K4.1** A tool MUST read a remote source only when the SHA-256 of its content equals the hash in `rialto.lock`. A remote source not in the lock yet MUST be fetched and added to it.
+- **K4.1** A tool MUST read a remote source only when the SHA-256 of its content equals the hash in the lock of the contract. A remote source not in the lock yet MUST be fetched and added to it.
 - **K4.2** A tool MUST reject a remote source whose content differs from its locked hash, and MUST NOT change a locked hash except by an explicit update command.
 - **K4.3** A tool MUST be able to work offline from a cached copy that matches the lock, and MUST reject a remote source it can neither fetch nor find in its cache. It MUST NOT fall back to another version.
 - **K4.4** A remote source MUST use `https`.
-- **K4.5** A tool MUST report the error `RIALTO-K010` when `rialto.lock` exists but cannot be read as a lock, such as a directory, or when the tool needs to add or change an entry and cannot write the lock. The error names the lock and the sources it could not pin. The tool MUST still report its other findings, and MUST NOT treat an unreadable lock as empty.
+- **K4.5** A tool MUST report the error `RIALTO-K010` when the lock of the contract exists but cannot be read as a lock, such as a directory, or when the tool needs to add or change an entry and cannot write the lock. The error names the lock and the sources it could not pin. The tool MUST still report its other findings, and MUST NOT treat an unreadable lock as empty.
+- **K4.6** The lock of a contract MUST be the file in the directory of its root whose name is the root's file name with a trailing `.yaml`, `.yml` or `.json` removed, then a trailing `.rialto` removed, followed by `.rialto.lock`: `shipment.rialto.yaml` and `shipment.yaml` both have `shipment.rialto.lock`. A tool MUST NOT read or write a lock of another name, and MUST NOT change the lock of another contract.
+- **K4.7** A tool MUST write the file name of the root under `contract` in every lock it writes. It MUST report `RIALTO-K010` for a lock that holds entries and has no `contract`, or a `contract` that is not the file name of the root, and MUST then treat the lock as unreadable (K4.5).
 
 ### K5. Contract over several files
 
@@ -336,6 +339,8 @@ Examples: test contracts [`invalid/duplicate-name.yaml`](../examples/contracts/i
 - **Descriptions are documentation only (K3).** Behavior must follow from declarations a generator can check; prose cannot be checked. Copy shown to end users stays in message keys (U1.5), so it can be translated.
 - **Standard diagnostic codes (K1.10).** Shared test contracts and multi-language tooling only agree on why an invalid contract failed when they report the same code for the same violation.
 - **Pinned remote sources (K4).** A contract that refers to an API another team publishes must build the same way tomorrow; a hash makes an upstream change visible as a deliberate update with a diff, not a surprise in a later build.
+- **One lock per contract, named after it (K4.6).** What a lock pins belongs to one contract. Contracts in one directory that shared a lock would each remove the other's entries as unused, and the next run would pin whatever upstream serves then, without the check of K4.2. A rule that only one contract may live in a directory could not be checked by a tool that is given one contract. A name that follows the root lets a tool find the lock without searching, and the `.rialto` in it keeps it apart from the locks of other tools. One lock per directory with a section per contract was rejected: every contract would write the same file, with merge conflicts between unrelated changes.
+- **The lock names its contract (K4.7).** Two roots that differ only in extension or case, or a lock copied along with a contract, would otherwise share a lock without anyone noticing; the name in the file makes that an error instead of a silent new pin.
 - **Fragments merged by name, not by `$ref` (K5).** Elements of a contract already refer to each other by name, so files merge without an index of pointers, and a duplicate is the same error as in one file. JSON `$ref` would need such an index, and the bundlers built for OpenAPI do not read other kinds of documents.
 - **One bundled form (K5.1).** How a team splits its files is its own choice; generators in other languages, compatibility checks and published contracts keep one document as input.
 - **Migrations as a source (K1.9).** A service's schema exists as its migrations; pointing at them avoids a second, hand-kept schema file that drifts.

@@ -31,8 +31,10 @@ profile of its slice.
   so every language can hold it.
 - `description` in CommonMark on types, properties, shapes, operations, events and error codes (K3).
 - Sources (K4): a contract points into OpenAPI, AsyncAPI and SQL documents instead of repeating them. A SQL source can
-  be the migrations of a service, applied in version order (K1.9). Remote sources are pinned by hash in `rialto.lock`;
-  a lock that cannot be read or written is an error (`RIALTO-K010`), never an empty lock.
+  be the migrations of a service, applied in version order (K1.9). Remote sources are pinned by hash in the lock of the
+  contract, `shipment.rialto.lock` next to `shipment.rialto.yaml`, which names the contract it belongs to, so contracts
+  in one directory never share a lock (K4.6, K4.7); a lock that cannot be read or written, or belongs to another
+  contract, is an error (`RIALTO-K010`), never an empty lock.
 - Contracts over several files (K5): a root lists its fragments under `include`, and they merge by name into one
   bundled document.
 - Extension keys `x-<generator>-<name>` for the settings of one generator (K1.8).
@@ -45,7 +47,7 @@ profile of its slice.
 - Test contracts in [`examples/contracts`](examples/contracts/README.md): valid contracts that must pass, and invalid
   ones that each name the codes they must produce. They cover documents that are not a mapping, a key that is used
   twice, a file with two documents, schema violations, unsupported versions, unresolved references, duplicate names,
-  invalid map keys, missing sources, an unusable `rialto.lock` and contracts over several files.
+  invalid map keys, missing sources, an unusable lock, a lock of another contract and contracts over several files.
 - `rialto conformance`, of [rialto-jvm](https://github.com/buijs-dev/rialto-jvm), runs any tool over the test
   contracts and reports per contract whether it passed, so anyone can repeat a claim of conformance.
 - The test contracts, the JSON Schema and the Markdown of the specification are published together as
