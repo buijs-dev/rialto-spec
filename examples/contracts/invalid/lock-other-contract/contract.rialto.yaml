@@ -1,0 +1,7 @@
+# expect: RIALTO-K010
+# capabilities: none
+rialto: "1.0.0"
+info: {name: lock-other-contract, version: 1.0.0}
+# contract.rialto.lock next to this file belongs to other.rialto.yaml, so it is not the lock of this contract (K4.7).
+sources:
+  api: {kind: openapi, path: "https://api.example.invalid/openapi.json", version: 1.0.0, status: current}
