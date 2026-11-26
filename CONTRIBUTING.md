@@ -82,4 +82,4 @@ Write a requirement as a list item starting with its identifier:
 - Terminology: "binding" and forbidden names.
 - Links and anchors.
 - The checks cover the documents and examples that exist; a reference to a requirement of a profile that has not arrived yet is accepted.
-- With `pyyaml` and `jsonschema` installed: the Shipment contract (once it is there), `examples/contracts/valid/` and every YAML block in the Markdown whose keys are contract sections, against the JSON Schema. Start a YAML block that is not a contract, such as a lock file, with `# rialto.lock`. The `invalid/` contracts need real tooling and are not checked here, except the contracts over several files.
+- With `pyyaml` and `jsonschema` installed: the Shipment contract (once it is there), `examples/contracts/valid/` and every YAML block in the Markdown whose keys are contract sections, against the JSON Schema. Start a YAML block that is not a contract, such as a lock file, with a comment that names the file, such as `# shipment.rialto.lock`. The `invalid/` contracts need real tooling and are not checked here, except the contracts over several files.
