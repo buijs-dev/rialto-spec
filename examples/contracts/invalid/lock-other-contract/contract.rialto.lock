@@ -1,0 +1,5 @@
+# Written by Rialto: the SHA-256 of every remote source of the contract (K4). Commit this file;
+# `rialto sources update` accepts new versions.
+contract: other.rialto.yaml
+sources:
+  "https://api.example.invalid/openapi.json": "0000000000000000000000000000000000000000000000000000000000000000"
