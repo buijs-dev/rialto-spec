@@ -10,8 +10,8 @@ import { loadEnv } from 'vite';
 const siteDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const root = join(siteDir, '..');
 const out = join(siteDir, 'src', 'content', 'docs');
-const env = { ...loadEnv('production', siteDir, 'SPEC_'), ...process.env };
-const base = (env.SPEC_BASE || '/').replace(/\/$/, '');
+const env = { ...loadEnv('production', siteDir, 'SITE_'), ...process.env };
+const base = (env.SITE_BASE || '/').replace(/\/$/, '');
 const repository = 'https://github.com/buijs-dev/rialto-spec/blob/develop';
 
 const top = ['README.md', 'GOVERNANCE.md', 'CONTRIBUTING.md', 'CHANGELOG.md'];
@@ -101,7 +101,7 @@ for (const schema of readdirSync(join(root, 'spec')).filter((name) => name.endsW
 }
 
 // For AI tools (https://llmstxt.org): an index, and the whole specification in reading order as one file.
-const siteUrl = (env.SPEC_SITE || 'https://rialto.buijs.dev') + base;
+const siteUrl = (env.SITE_URL || 'https://rialto.buijs.dev') + base;
 const order = ['README.md', 'spec/overview.md', 'spec/contract.md', 'spec/core.md',
     ...markdown.filter((file) => file.startsWith('spec/profiles/')).sort(),
     'spec/generators.md', 'examples/shipment/README.md', 'examples/contracts/README.md'].filter((file) => known.has(file));

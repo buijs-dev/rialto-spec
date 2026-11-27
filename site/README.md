@@ -17,7 +17,7 @@ npm run build && npm run preview    # the production build, as CI makes it
 
 The dev server does not watch the files outside `site/`: after editing one, run `npm run sync` to copy them again.
 
-`SPEC_SITE` and `SPEC_BASE`, from the environment or `site/.env`, override where the site is served. Without them it is
+`SITE_URL` and `SITE_BASE`, from the environment or `site/.env`, override where the site is served. Without them it is
 `https://rialto.buijs.dev/`.
 
 ## Where the pages come from

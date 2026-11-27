@@ -3,11 +3,11 @@ import starlight from '@astrojs/starlight';
 import { loadEnv } from 'vite';
 import { existsSync } from 'node:fs';
 
-// Where the site is served: https://rialto.buijs.dev/ (public/CNAME). SPEC_SITE and SPEC_BASE, from the environment
+// Where the site is served: https://rialto.buijs.dev/ (public/CNAME). SITE_URL and SITE_BASE, from the environment
 // or .env (written by CI, see .github/workflows/pages.yml), override it, for example for a preview elsewhere.
-const env = { ...loadEnv('production', process.cwd(), 'SPEC_'), ...process.env };
-const site = env.SPEC_SITE || 'https://rialto.buijs.dev';
-const base = env.SPEC_BASE || '/';
+const env = { ...loadEnv('production', process.cwd(), 'SITE_'), ...process.env };
+const site = env.SITE_URL || 'https://rialto.buijs.dev';
+const base = env.SITE_BASE || '/';
 const hasProfiles = existsSync(new URL('../spec/profiles', import.meta.url));
 
 export default defineConfig({
