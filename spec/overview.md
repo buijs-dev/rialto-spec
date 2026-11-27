@@ -138,7 +138,7 @@ The profiles, Generators and the Shipment example are not published yet: the spe
 | theme values and copy                          | the application's design and localization sources            |
 
 A generator reports contradictions between these sources and never lets one silently redefine another (C5.3, C5.4). 
-A contract can reference several versions of an API (for example `api-v1` and `api-v2`), 
+A contract can reference several versions of an API (for example `apiV1` and `apiV2`), 
 each mapped to the same domain, so layers evolve independently.
 
 *Why:* OpenAPI and SQL already have mature tooling; Rialto adds what they cannot express: how their 

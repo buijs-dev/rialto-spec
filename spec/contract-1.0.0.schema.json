@@ -169,9 +169,9 @@
       ]
     },
     "typeExpression": {
-      "description": "Scalar, named type, or one level of list, set or map.",
+      "description": "Scalar, named type, or one level of list, set or map (K2.1). Its form is checked by the tool (RIALTO-K006), not by this schema.",
       "type": "string",
-      "pattern": "^(?:boolean|int32|int64|decimal(\\(\\d+,\\d+\\))?|float64|string|uuid|date|time|localDateTime|instant|offsetDateTime|zonedDateTime|duration|period|bytes|json|binary|[A-Z][A-Za-z0-9]*|list<(?:boolean|int32|int64|decimal(\\(\\d+,\\d+\\))?|float64|string|uuid|date|time|localDateTime|instant|offsetDateTime|zonedDateTime|duration|period|bytes|json|[A-Z][A-Za-z0-9]*)\\??>|set<(?:boolean|int32|int64|decimal(\\(\\d+,\\d+\\))?|float64|string|uuid|date|time|localDateTime|instant|offsetDateTime|zonedDateTime|duration|period|bytes|json|[A-Z][A-Za-z0-9]*)\\??>|map<(?:string|uuid|int32|int64|date|[A-Z][A-Za-z0-9]*), ?(?:boolean|int32|int64|decimal(\\(\\d+,\\d+\\))?|float64|string|uuid|date|time|localDateTime|instant|offsetDateTime|zonedDateTime|duration|period|bytes|json|[A-Z][A-Za-z0-9]*)\\??>)$"
+      "minLength": 1
     },
     "scalar": {
       "type": "string",

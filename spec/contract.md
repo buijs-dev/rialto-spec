@@ -30,7 +30,7 @@ storage:
 
 ## Document
 
-YAML and JSON represent the same data model. A YAML contract uses only what JSON can express: string keys, no custom tags.
+YAML and JSON represent the same data model. A YAML contract uses only what JSON can express: string keys, no anchors or aliases, and no tags beyond those of the YAML 1.2 core schema (K1.11).
 
 | Key | Required | Content | Defined in |
 |---|---|---|---|
@@ -181,12 +181,12 @@ Every contract validator and generator reports contract validation errors with t
 
 | Code | Meaning | Requirements |
 |---|---|---|
-| `RIALTO-K001` | Document is not valid YAML or JSON, or is not a mapping | K1.7 |
+| `RIALTO-K001` | Document is not valid YAML or JSON, is not a mapping, or uses YAML that JSON cannot express (a key that is not a string, an anchor or alias, a tag beyond the core schema) | K1.7, K1.11 |
 | `RIALTO-K002` | Contract or fragment violates the JSON Schema (such as an unknown key or wrong value type) | C5.8, K1.7, K5.6 |
 | `RIALTO-K003` | Unsupported `rialto` version, or a fragment whose `rialto` version differs from the root's | C5.7, K1.1, K5.3 |
-| `RIALTO-K004` | Unresolved reference to a contract element (type, shape, operation, event or view) | K1.2 |
+| `RIALTO-K004` | Unresolved reference to a contract element (type, shape, operation, event or view), or a `<source>#<location>` whose source the contract does not declare | K1.2 |
 | `RIALTO-K005` | Duplicate name within `types` and `shapes`, within a section, or across fragments | K1.3, K5.4 |
-| `RIALTO-K006` | Invalid type expression, such as a map key that is not an allowed scalar or enum | K2.1 |
+| `RIALTO-K006` | Invalid type expression, such as an unknown scalar, a nested collection, `?` outside a collection, or a map key that is not an allowed scalar or enum | K2.1 |
 | `RIALTO-K007` | An `include` path matches no file | K5.2 |
 | `RIALTO-K008` | A fragment declares `info`, `sources` or `include` | K5.2 |
 | `RIALTO-K009` | A single-file section (`errors`, `auth`, `navigation`) or top-level extension key appears in two files | K5.4 |
@@ -264,7 +264,7 @@ Every contract validator and generator reports contract validation errors with t
 
 ### K1. Document
 
-Examples: test contracts [`invalid/duplicate-key.yaml`](../examples/contracts/invalid/duplicate-key.yaml), [`invalid/duplicate-name.yaml`](../examples/contracts/invalid/duplicate-name.yaml), [`invalid/fragment-duplicate/`](../examples/contracts/invalid/fragment-duplicate/), [`invalid/fragment-include-empty/`](../examples/contracts/invalid/fragment-include-empty/), [`invalid/fragment-include-string/`](../examples/contracts/invalid/fragment-include-string/), [`invalid/fragment-not-a-mapping/`](../examples/contracts/invalid/fragment-not-a-mapping/), [`invalid/fragment-root-section/`](../examples/contracts/invalid/fragment-root-section/), [`invalid/fragment-version/`](../examples/contracts/invalid/fragment-version/), [`invalid/integer-overflow.yaml`](../examples/contracts/invalid/integer-overflow.yaml), [`invalid/missing-source.yaml`](../examples/contracts/invalid/missing-source.yaml), [`invalid/not-a-mapping.yaml`](../examples/contracts/invalid/not-a-mapping.yaml), [`invalid/projection-circular-path.yaml`](../examples/contracts/invalid/projection-circular-path.yaml), [`invalid/projection-scalar-path.yaml`](../examples/contracts/invalid/projection-scalar-path.yaml), [`invalid/two-documents.yaml`](../examples/contracts/invalid/two-documents.yaml), [`invalid/unknown-key.yaml`](../examples/contracts/invalid/unknown-key.yaml), [`invalid/unknown-type.yaml`](../examples/contracts/invalid/unknown-type.yaml), [`invalid/unresolved-external.yaml`](../examples/contracts/invalid/unresolved-external.yaml), [`invalid/unsupported-version.yaml`](../examples/contracts/invalid/unsupported-version.yaml), [`valid/minimal.yaml`](../examples/contracts/valid/minimal.yaml).
+Examples: test contracts [`invalid/duplicate-key.yaml`](../examples/contracts/invalid/duplicate-key.yaml), [`invalid/duplicate-name.yaml`](../examples/contracts/invalid/duplicate-name.yaml), [`invalid/fragment-duplicate/`](../examples/contracts/invalid/fragment-duplicate/), [`invalid/fragment-include-empty/`](../examples/contracts/invalid/fragment-include-empty/), [`invalid/fragment-include-string/`](../examples/contracts/invalid/fragment-include-string/), [`invalid/fragment-not-a-mapping/`](../examples/contracts/invalid/fragment-not-a-mapping/), [`invalid/fragment-root-section/`](../examples/contracts/invalid/fragment-root-section/), [`invalid/fragment-version/`](../examples/contracts/invalid/fragment-version/), [`invalid/integer-overflow.yaml`](../examples/contracts/invalid/integer-overflow.yaml), [`invalid/missing-source.yaml`](../examples/contracts/invalid/missing-source.yaml), [`invalid/not-a-mapping.yaml`](../examples/contracts/invalid/not-a-mapping.yaml), [`invalid/projection-circular-path.yaml`](../examples/contracts/invalid/projection-circular-path.yaml), [`invalid/projection-scalar-path.yaml`](../examples/contracts/invalid/projection-scalar-path.yaml), [`invalid/two-documents.yaml`](../examples/contracts/invalid/two-documents.yaml), [`invalid/unknown-key.yaml`](../examples/contracts/invalid/unknown-key.yaml), [`invalid/unknown-source.yaml`](../examples/contracts/invalid/unknown-source.yaml), [`invalid/unknown-type.yaml`](../examples/contracts/invalid/unknown-type.yaml), [`invalid/unresolved-external.yaml`](../examples/contracts/invalid/unresolved-external.yaml), [`invalid/unsupported-version.yaml`](../examples/contracts/invalid/unsupported-version.yaml), [`invalid/yaml-alias.yaml`](../examples/contracts/invalid/yaml-alias.yaml), [`invalid/yaml-key.yaml`](../examples/contracts/invalid/yaml-key.yaml), [`invalid/yaml-tag.yaml`](../examples/contracts/invalid/yaml-tag.yaml), [`valid/minimal.yaml`](../examples/contracts/valid/minimal.yaml).
 
 - **K1.1** A generator MUST reject a contract whose `rialto` version it does not support (C5.7).
 - **K1.2** Every reference MUST resolve to exactly one element. A generator MUST reject a contract with an unresolved or ambiguous reference.
@@ -272,14 +272,15 @@ Examples: test contracts [`invalid/duplicate-key.yaml`](../examples/contracts/in
 - **K1.4** A generator MUST ignore sections of profiles it does not implement, and MUST reject a request to generate from a section it does not support.
 - **K1.5** Two generators that implement the same profile MUST give a contract the same meaning for everything this specification defines, whatever their language.
 - **K1.6** Generator configuration, such as package names, output paths and code style, MUST NOT be part of the contract, except under `x-` keys.
-- **K1.7** A generator MUST reject a contract that is not valid against the JSON Schema of its `rialto` version. The schema checks structure only; K1.2 and K1.3 are checked by the generator. A generator that is run by a tool that has validated the contract meets K1.1, K1.2 and this requirement through that tool; it need not validate again.
+- **K1.7** A generator MUST reject a contract that is not valid against the JSON Schema of its `rialto` version. The schema checks structure only; K1.2, K1.3 and the form of a type expression (K2.1) are checked by the generator. A generator that is run by a tool that has validated the contract meets K1.1, K1.2 and this requirement through that tool; it need not validate again.
 - **K1.8** A generator MUST ignore the extension keys of other generators. An extension MUST NOT change the meaning of anything this specification defines (K1.5).
 - **K1.9** A tool MUST read the migrations of an SQL source in version order and resolve references against the resulting schema. It MUST reject a path that matches no file.
 - **K1.10** A tool that validates a contract MUST report violations of the rules in the [standard diagnostic codes](#standard-diagnostic-codes) table with the identifier listed there (C5.11).
+- **K1.11** A YAML contract or fragment MUST use only what JSON can express: every key a string, no anchors or aliases, and no tags other than those of the YAML 1.2 core schema (`!!str`, `!!int`, `!!float`, `!!bool`, `!!null`, `!!map`, `!!seq`). A tool MUST reject one that does not (`RIALTO-K001`).
 
 ### K2. Types
 
-Examples: test contracts [`invalid/map-key.yaml`](../examples/contracts/invalid/map-key.yaml).
+Examples: test contracts [`invalid/binary-in-list.yaml`](../examples/contracts/invalid/binary-in-list.yaml), [`invalid/map-key.yaml`](../examples/contracts/invalid/map-key.yaml), [`invalid/type-expression.yaml`](../examples/contracts/invalid/type-expression.yaml).
 
 - **K2.1** Generated code MUST represent every value of a scalar type exactly. `int64` and `decimal` values MUST NOT pass through binary floating point, also not when they are JSON numbers.
 - **K2.2** A `decimal(p,s)` value with more than `p` digits or more than `s` fraction digits MUST be rejected with code `precision`; it MUST NOT be rounded.
@@ -327,7 +328,7 @@ Examples: test contracts [`invalid/duplicate-name.yaml`](../examples/contracts/i
 
 - **One document for all layers.** Cross-language generation needs one shared input; separate files per layer would need their own correspondence rules again.
 - **References to OpenAPI and SQL instead of copies.** Those standards stay authoritative for wire and storage and keep their tooling; the contract adds only correspondence and meaning.
-- **YAML and JSON.** YAML is pleasant to write, JSON easy to generate and validate; restricting YAML to the JSON data model keeps them equivalent.
+- **YAML and JSON (K1.11).** YAML is pleasant to write, JSON easy to generate and validate; restricting YAML to the JSON data model keeps them equivalent. A tag or a key that is not a string has no JSON form, so a tool would have to drop or change it; an alias makes a document whose meaning depends on expanding it, and one that can grow exponentially when it is.
 - **No generator configuration in the contract.** The contract is shared between languages; package names and code style are not.
 - **A JSON Schema, not prose only (K1.7).** Every language has a JSON Schema validator, so generators reject malformed contracts identically.
 - **One JSON form per type (K2).** A backend and a frontend only agree on a value if they agree on its text. RFC 3339, RFC 9557, ISO 8601 and RFC 4648 already define these forms.
@@ -337,6 +338,7 @@ Examples: test contracts [`invalid/duplicate-name.yaml`](../examples/contracts/i
 - **Extensible enums (K2.7).** A client released before a new member was added must keep working; preserving the unknown value is what makes adding members a compatible change.
 - **Unions with a discriminator (K2.8).** It is how OpenAPI (`oneOf` with `discriminator`) and most languages (sealed types) express alternatives; decoding by trial is ambiguous. The discriminator belongs to the union and the wire, not to the variants: in Kotlin and Dart the variant's class already is the distinction.
 - **Descriptions are documentation only (K3).** Behavior must follow from declarations a generator can check; prose cannot be checked. Copy shown to end users stays in message keys (U1.5), so it can be translated.
+- **Type expressions checked by the tool, not the schema (K1.7, K2.1).** A schema pattern can only say that a type is wrong; the tool can say why, with `RIALTO-K006` or `RIALTO-P021` at the property, and report the other findings of the contract in the same run.
 - **Standard diagnostic codes (K1.10).** Shared test contracts and multi-language tooling only agree on why an invalid contract failed when they report the same code for the same violation.
 - **Pinned remote sources (K4).** A contract that refers to an API another team publishes must build the same way tomorrow; a hash makes an upstream change visible as a deliberate update with a diff, not a surprise in a later build.
 - **One lock per contract, named after it (K4.6).** What a lock pins belongs to one contract. Contracts in one directory that shared a lock would each remove the other's entries as unused, and the next run would pin whatever upstream serves then, without the check of K4.2. A rule that only one contract may live in a directory could not be checked by a tool that is given one contract. A name that follows the root lets a tool find the lock without searching, and the `.rialto` in it keeps it apart from the locks of other tools. One lock per directory with a section per contract was rejected: every contract would write the same file, with merge conflicts between unrelated changes.
