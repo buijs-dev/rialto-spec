@@ -14,6 +14,12 @@ profile of its slice.
 
 **Specification**
 
+- Guides that explain a feature in depth: why it exists, what a tool does in each situation, the edge cases and the
+  design decisions. [Validation and diagnostics](docs/guides/validation-and-diagnostics.md),
+  [contracts over several files](docs/guides/contracts-over-several-files.md),
+  [sources and references](docs/guides/sources-and-references.md),
+  [remote sources and the lock](docs/guides/remote-sources.md) and [types](docs/guides/types.md).
+
 - The [overview](spec/overview.md), [core](spec/core.md) and the [contract format](spec/contract.md). Core defines the
   terms and the rules every generator follows (C1–C8).
 - Every requirement has a stable id, such as `K1.2`, so tools, tests and findings can cite it. Requirements use MUST,
@@ -29,6 +35,11 @@ profile of its slice.
   enums, discriminated unions, and `json` and `binary` for free-form and binary data.
 - Every number in a contract (`maxLength`, `maxItems`, `maxSize`, …) is a 32-bit signed integer, at most 2147483647,
   so every language can hold it.
+- The form of a type expression is checked by the tool, not by the JSON Schema (K1.7): an invalid one, such as
+  `list<list<int32>>` or `map<boolean, string>`, is `RIALTO-K006`, and a `binary` in a collection `RIALTO-P021`.
+- A YAML contract uses only what JSON can express (K1.11): keys are strings, no anchors or aliases, and no tags
+  beyond the YAML 1.2 core schema; anything else is `RIALTO-K001`.
+- A reference to a source the contract does not declare is `RIALTO-K004`, like any other unresolved name.
 - `description` in CommonMark on types, properties, shapes, operations, events and error codes (K3).
 - Sources (K4): a contract points into OpenAPI, AsyncAPI and SQL documents instead of repeating them. A SQL source can
   be the migrations of a service, applied in version order (K1.9). Remote sources are pinned by hash in the lock of the

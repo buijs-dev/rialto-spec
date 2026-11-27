@@ -31,8 +31,9 @@
 | `spec/profiles/` | One profile per layer (from slice 1, one slice per profile) |
 | `spec/generators.md` | What a generator must document; generators themselves live in their own repositories (slice 10) |
 | `docs/` | Tooling overview (informative) |
+| `docs/guides/` | One guide per feature (informative): Why, How it works, Scenarios, Edge cases, Design decisions, Requirements. A guide cites requirements and does not repeat them |
 | `GOVERNANCE.md` | Roles, decisions, versions and conformance |
-| `site/` | The site at [rialto.buijs.dev](https://rialto.buijs.dev/), built from the Markdown of this repository |
+| `site/` | The site at [rialto.buijs.dev](https://rialto.buijs.dev/), built from the Markdown of this repository; see [site/README.md](site/README.md) to run it locally and for where its pages come from |
 | `examples/shipment/` | The one example every document draws from (grows with the slices) |
 | `examples/contracts/` | Shared test contracts every implementation must validate the same way |
 | `tools/bin/check_spec.dart` | Consistency checks of the documents |

@@ -65,6 +65,18 @@ const rewrite = (file, text) => {
         .join('\n');
 };
 
+// A folder the sidebar generates (astro.config.mjs) is ordered as the document that lists it links to its pages.
+const listedBy = { 'docs/guides/': 'docs/tooling.md', 'spec/profiles/': 'spec/overview.md' };
+const sidebarOrder = (file) => {
+    const folder = Object.keys(listedBy).find((prefix) => file.startsWith(prefix));
+    if (!folder || !known.has(listedBy[folder])) return undefined;
+    const lister = listedBy[folder];
+    const targets = [...readFileSync(join(root, lister), 'utf8').matchAll(/\]\(([^)#\s]+)/g)]
+        .map((match) => posix.normalize(posix.join(posix.dirname(lister), match[1])));
+    const position = targets.indexOf(file);
+    return position === -1 ? undefined : position;
+};
+
 rmSync(out, { recursive: true, force: true });
 rmSync(join(siteDir, 'public', 'spec'), { recursive: true, force: true });
 
@@ -74,7 +86,9 @@ for (const file of markdown) {
     const title = heading ? heading[1].trim() : file;
     if (heading) text = text.replace(/^# .+\n/m, '');
     const sidebarLabel = file === 'README.md' ? 'Introduction' : title;
-    const frontmatter = `---\ntitle: ${JSON.stringify(title)}\nsidebar:\n  label: ${JSON.stringify(sidebarLabel)}\n---\n\n`;
+    const order = sidebarOrder(file);
+    const frontmatter = `---\ntitle: ${JSON.stringify(title)}\nsidebar:\n  label: ${JSON.stringify(sidebarLabel)}\n`
+        + (order === undefined ? '' : `  order: ${order}\n`) + '---\n\n';
     const target = join(out, slug(file) + '.md');
     mkdirSync(dirname(target), { recursive: true });
     writeFileSync(target, frontmatter + rewrite(file, text));
