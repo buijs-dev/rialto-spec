@@ -1,0 +1,15 @@
+# expect: RIALTO-K004
+# capabilities: domain.entity
+rialto: "1.0.0"
+info: {name: unknown-source, version: 1.0.0}
+sources:
+  api: {kind: openapi, path: ../support/api.json, version: 2.0.0, status: current}
+types:
+  Thing:
+    kind: entity
+    identity: [id]
+    properties:
+      id: {type: uuid}
+mappings:
+  # `catalog` is not under sources, so the reference does not resolve (K1.2).
+  - {source: "catalog#/components/schemas/Thing", target: Thing, direction: toTarget}

@@ -1,0 +1,4 @@
+# expect: RIALTO-K001
+rialto: "1.0.0"
+# A tag beyond the YAML 1.2 core schema has no JSON form (K1.11).
+info: {name: !shipment yaml-tag, version: 1.0.0}

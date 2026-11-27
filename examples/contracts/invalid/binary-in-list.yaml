@@ -1,0 +1,12 @@
+# expect: RIALTO-P021
+# capabilities: domain.entity
+rialto: "1.0.0"
+info: {name: binary-in-list, version: 1.0.0}
+types:
+  Thing:
+    kind: entity
+    identity: [id]
+    properties:
+      id: {type: uuid}
+      # A binary is never an element of a collection (K2.11).
+      scans: {type: "list<binary>", maxSize: 1048576}

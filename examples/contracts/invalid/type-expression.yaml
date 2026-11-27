@@ -1,0 +1,12 @@
+# expect: RIALTO-K006
+# capabilities: domain.entity
+rialto: "1.0.0"
+info: {name: type-expression, version: 1.0.0}
+types:
+  Thing:
+    kind: entity
+    identity: [id]
+    properties:
+      id: {type: uuid}
+      # Collections do not nest (K2.1): a type expression the tool rejects, not the JSON Schema.
+      grid: {type: "list<list<int32>>"}

@@ -1,0 +1,5 @@
+# expect: RIALTO-K001
+rialto: "1.0.0"
+info: {name: yaml-key, version: 1.0.0}
+# The key 1 is an integer in YAML; JSON keys are strings (K1.11).
+x-ports: {1: http}
