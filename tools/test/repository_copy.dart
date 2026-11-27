@@ -15,6 +15,9 @@ Directory copyOfTheRepository() {
   for (final name in ['README.md', 'CONTRIBUTING.md', 'GOVERNANCE.md', 'CHANGELOG.md', 'LICENSE', 'NOTICE']) {
     File('${repository.path}/$name').copySync('${copy.path}/$name');
   }
+  // CONTRIBUTING.md links to the README of the site.
+  Directory('${copy.path}/site').createSync();
+  File('${repository.path}/site/README.md').copySync('${copy.path}/site/README.md');
   return copy;
 }
 
